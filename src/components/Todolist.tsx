@@ -1,4 +1,4 @@
-import React from "react";
+import React, {ChangeEvent, useState} from "react";
 import {TaskFilterType} from "../App";
 
 export type TaskType = {
@@ -11,39 +11,81 @@ type PropsType = {
     title: string
     tasks: Array<TaskType>
     removeTask: (id: string) => void
-    taskFilter: (filter: TaskFilterType) => void
+    addTasks: (newTaskValue: string) => void
 }
 
 
 
 export function Todolist(props: PropsType ) {
 
-    const taskElements = props.tasks.map ((tasksObj) => {
+    //Filter
+    let [filter, setFilter] = useState<TaskFilterType>('all')
+
+    // const taskFilter = (filter: TaskFilterType) => {
+    //     setFilter(filter)
+    // }
+    let filteredTasks = props.tasks
+    if (filter === 'completed') {
+        filteredTasks = props.tasks.filter(tasksObj => tasksObj.isDone)
+    }
+    if (filter === 'active') {
+        filteredTasks = props.tasks.filter(tasksObj => !tasksObj.isDone )
+    }
+
+    const onFilterHandler = (filter: TaskFilterType) => {
+        setFilter(filter)
+    }
+
+    //Adding
+    let [newTaskValue, setNewTask] = useState('')
+    const addTask = () => {
+        props.addTasks(newTaskValue)
+        setNewTask('')
+    }
+    const onKeyPressHandler = (e: any) => {
+        if (e.key === 'Enter') {
+            props.addTasks(newTaskValue)
+            setNewTask('')
+        }
+    }
+    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        setNewTask(e.currentTarget.value)
+    }
+
+    //Removing
+    const onRemoveTask = (tId: string) => {
+        props.removeTask(tId)
+    }
+    const taskElements = filteredTasks.map ((tasksObj) => {
             return (
-                <li>
+                <li key={tasksObj.id}>
                     <input type="checkbox" checked={tasksObj.isDone}/>
                     <span>{tasksObj.title}</span>
-                    <button onClick={() => props.removeTask(tasksObj.id)}>х</button>
+                    <button onClick={() => onRemoveTask(tasksObj.id)}>х</button>
                 </li>
             )
         })
 
-
-
+    //JSX
     return (
         <div>
             <h3>{props.title}</h3>
             <div>
-                <input/>
-                <button>+</button>
+                <input
+                    placeholder='add new task'
+                    value={newTaskValue}
+                    onChange={onChangeHandler}
+                    onKeyPress={onKeyPressHandler}
+                />
+                <button onClick={addTask}> +</button>
             </div>
             <ul>
                 {taskElements}
             </ul>
             <div>
-                <button onClick={() => {props.taskFilter('all')}}>All</button>
-                <button onClick={() => {props.taskFilter('active')}}>Active</button>
-                <button onClick={() => {props.taskFilter('completed')}}>Completed</button>
+                <button onClick={() => onFilterHandler('all')}>All</button>
+                <button onClick={() => onFilterHandler('active')}>Active</button>
+                <button onClick={() => onFilterHandler('completed')}>Completed</button>
             </div>
         </div>
     )

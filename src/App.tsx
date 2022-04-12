@@ -16,26 +16,16 @@ function App() {
         {id: v1(), title:"React", isDone: false},
         {id: v1(), title:"Redux", isDone: false},
     ])
-    let [filter, setFilter] = useState<TaskFilterType>('all')
-    console.log(tasks)
 
 
-    function taskFilter (filter: TaskFilterType) {
-        // console.log(filter)
-        setFilter(filter)
+    //Adding
+    function addTasks (newTaskValue: string) {
+        let newTask = {id: v1(), title: newTaskValue, isDone: false}
+        let newTasksArr = [newTask, ...tasks]
+        setTasks(newTasksArr)
     }
 
-    let filteredTasksArr = tasks
-    if (filter === 'completed') {
-        filteredTasksArr = tasks.filter(tasksObj => tasksObj.isDone)
-    }
-    if (filter === 'active') {
-        filteredTasksArr = tasks.filter(tasksObj => !tasksObj.isDone )
-    }
-
-
-
-
+    //Removing
     function removeTask (id: string) {
         let removeTaskFilteredTasksArr = tasks.filter (tasksObj => tasksObj.id !== id)
         setTasks(removeTaskFilteredTasksArr)
@@ -46,9 +36,9 @@ function App() {
         <div className="App">
             <Todolist
                 title="What to learn"
-                tasks={filteredTasksArr}
+                tasks={tasks}
                 removeTask ={removeTask}
-                taskFilter={taskFilter}
+                addTasks={addTasks}
                 />
         </div>
     );
