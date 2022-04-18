@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './App.css';
-import {Todolist} from "./components/Todolist";
+import Todolist from "./components/Todolist";
 import {TaskType} from "./components/Todolist";
 import { v1 } from 'uuid';
 
@@ -18,17 +18,25 @@ function App() {
     ])
 
 
-    //Adding
+//Adding
     function addTasks (newTaskValue: string) {
         let newTask = {id: v1(), title: newTaskValue, isDone: false}
         let newTasksArr = [newTask, ...tasks]
         setTasks(newTasksArr)
     }
 
-    //Removing
+//Removing
     function removeTask (id: string) {
         let removeTaskFilteredTasksArr = tasks.filter (tasksObj => tasksObj.id !== id)
         setTasks(removeTaskFilteredTasksArr)
+    }
+
+//Checkbox
+    function checkBoxChange (taskId: string, checked: boolean) {
+        console.log(taskId, checked)
+        let task = tasks.find (t => taskId === t.id)
+        if (task) {task.isDone = checked}
+        setTasks([...tasks])
     }
 
 
@@ -39,6 +47,7 @@ function App() {
                 tasks={tasks}
                 removeTask ={removeTask}
                 addTasks={addTasks}
+                checkBoxChange={checkBoxChange}
                 />
         </div>
     );

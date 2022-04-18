@@ -1,0 +1,11 @@
+.error {
+    border: 2px red solid;
+    background: coral;
+}
+
+.activefilter {
+    background: cornflowerblue;
+}
+.isDone {
+    opacity: 0.5;
+}

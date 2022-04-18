@@ -1,5 +1,6 @@
 import React, {ChangeEvent, useState} from "react";
 import {TaskFilterType} from "../App";
+import classes from './Todolist.module.css'
 
 export type TaskType = {
     id: string,
@@ -12,81 +13,115 @@ type PropsType = {
     tasks: Array<TaskType>
     removeTask: (id: string) => void
     addTasks: (newTaskValue: string) => void
+    checkBoxChange: (taskId: string, checked: boolean) => void
 }
 
 
+const Todolist: React.FC<PropsType> = (
+    {title, tasks, removeTask, addTasks, checkBoxChange}) => {
 
-export function Todolist(props: PropsType ) {
-
-    //Filter
+//States
     let [filter, setFilter] = useState<TaskFilterType>('all')
+    let [newTaskValue, setNewTask] = useState('')
+    let [error, setError] = useState('')
 
-    // const taskFilter = (filter: TaskFilterType) => {
-    //     setFilter(filter)
-    // }
-    let filteredTasks = props.tasks
+//Filter
+    let filteredTasks = tasks
     if (filter === 'completed') {
-        filteredTasks = props.tasks.filter(tasksObj => tasksObj.isDone)
+        filteredTasks = tasks.filter(tasksObj => tasksObj.isDone)
     }
     if (filter === 'active') {
-        filteredTasks = props.tasks.filter(tasksObj => !tasksObj.isDone )
+        filteredTasks = tasks.filter(tasksObj => !tasksObj.isDone)
     }
 
     const onFilterHandler = (filter: TaskFilterType) => {
         setFilter(filter)
     }
 
-    //Adding
-    let [newTaskValue, setNewTask] = useState('')
-    const addTask = () => {
-        props.addTasks(newTaskValue)
+//Adding
+
+    const addTaskOnclickHandler = () => {
+        if (newTaskValue.trim() === '') {
+            setError('! No tasks added !')
+            return
+        } else {
+            setError('')
+        }
+        addTasks(newTaskValue)
         setNewTask('')
     }
     const onKeyPressHandler = (e: any) => {
         if (e.key === 'Enter') {
-            props.addTasks(newTaskValue)
+            if (newTaskValue.trim() === '') {
+                setError('! No tasks added !')
+                return
+            } else {
+                setError('')
+            }
+            addTasks(newTaskValue)
             setNewTask('')
         }
     }
+
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        setError('')
         setNewTask(e.currentTarget.value)
     }
 
-    //Removing
-    const onRemoveTask = (tId: string) => {
-        props.removeTask(tId)
-    }
-    const taskElements = filteredTasks.map ((tasksObj) => {
-            return (
-                <li key={tasksObj.id}>
-                    <input type="checkbox" checked={tasksObj.isDone}/>
-                    <span>{tasksObj.title}</span>
-                    <button onClick={() => onRemoveTask(tasksObj.id)}>х</button>
-                </li>
-            )
-        })
+//Errors
 
-    //JSX
+    const currentClass = error ? classes.error : ''
+
+
+//Removing
+    const onRemoveTask = (tId: string) => {
+        removeTask(tId)
+    }
+
+
+//Elements + checkbox
+    const taskElements = filteredTasks.map((tasksObj) => {
+
+        const checkBoxOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+            checkBoxChange(tasksObj.id, e.currentTarget.checked)
+        }
+
+        return (
+            <li key={tasksObj.id}>
+                <input type="checkbox" checked={tasksObj.isDone} onChange={checkBoxOnChangeHandler}/>
+                <span className={tasksObj.isDone ? classes.isDone : ''}>{tasksObj.title}</span>
+                <button onClick={() => onRemoveTask(tasksObj.id)}>х</button>
+            </li>
+        )
+    })
+
+
+
+//JSX
     return (
         <div>
-            <h3>{props.title}</h3>
+            <h3>{title}</h3>
             <div>
                 <input
                     placeholder='add new task'
                     value={newTaskValue}
                     onChange={onChangeHandler}
                     onKeyPress={onKeyPressHandler}
+                    className={currentClass}
                 />
-                <button onClick={addTask}> +</button>
+                <button onClick={addTaskOnclickHandler}> +</button>
+                <div>{error}</div>
             </div>
             <ul>
                 {taskElements}
             </ul>
             <div>
-                <button onClick={() => onFilterHandler('all')}>All</button>
-                <button onClick={() => onFilterHandler('active')}>Active</button>
-                <button onClick={() => onFilterHandler('completed')}>Completed</button>
+                <button className={filter === 'all' ? classes.activefilter : ''} onClick={() => onFilterHandler('all')}>All</button>
+                <button className={filter === 'active' ? classes.activefilter : ''} onClick={() => onFilterHandler('active')}>Active</button>
+                <button className={filter === 'completed' ? classes.activefilter : ''} onClick={() => onFilterHandler('completed')}>Completed</button>
             </div>
         </div>
     )
 }
+
+export default Todolist
