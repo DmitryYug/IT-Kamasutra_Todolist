@@ -1,11 +1,7 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import './App.css';
 import Todolist from "./components/Todolist";
-import {TaskType} from "./components/Todolist";
 import {v1} from 'uuid';
-import todolist from "./components/Todolist";
-import classes from "./components/Todolist.module.css";
-import AddTDLInput from "./components/AddItemInput/AddItemInput";
 import AddItemInput from "./components/AddItemInput/AddItemInput";
 
 
@@ -55,7 +51,7 @@ function App() {
             }
         )
     }
-    const addTdl = (newTdlTitle: string) => {
+    function addTdl (newTdlTitle: string) {
         let newTDLId = v1()
         let newTDL: TdlsTypes = {id: newTDLId, title: newTdlTitle, filter: 'all'}
         setTdls([
@@ -76,18 +72,17 @@ function App() {
             [tdlId]: allTasksObj[tdlId].filter(task => task.id !== taskId)
         })
     }
-
     function removeTDL(tdlId: string) {
         setTdls(tdls.filter(tl => tl.id !== tdlId))
     }
 
 //Filter
-    const onFilter = (todolistId: string, filter: TaskFilterType) => {
+    function onFilter (todolistId: string, filter: TaskFilterType) {
         setTdls(tdls.map(tl => tl.id === todolistId ? {...tl, filter: filter} : tl))
     }
 
 //Checkbox
-    const checkBoxChange = (todolistId: string, taskId: string, checked: boolean) => {
+    function checkBoxChange (todolistId: string, taskId: string, checked: boolean) {
         let tasksArr = allTasksObj[todolistId]
         let currentTask = tasksArr.find(t => taskId === t.id)
         if (currentTask) {
@@ -96,17 +91,17 @@ function App() {
         }
     }
 
-//Editing
-    const spanChange = (todolistId: string, taskId: string, newTitle: string) => {
+//Editing   переделать map
+    function spanChange (todolistId: string, taskId: string, newTitle: string) {
         let currentTask = allTasksObj[todolistId].find(t => t.id === taskId)
         if(currentTask) {
             currentTask.title = newTitle
             setAllTasksObj({...allTasksObj})
         }
     }
-    const tdlTitleSpanChange = (todolistId: string, newTitle: string) => {
+    function tdlTitleSpanChange (todolistId: string, newTitle: string) {
         let currentTdl = tdls.find(tdl => tdl.id === todolistId)
-        if(currentTdl) {
+        if (currentTdl) {
             currentTdl.title = newTitle
         }
         setTdls([
