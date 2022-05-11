@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/IT-Kamasutra_Todolist/static/css/main.c3b5e57e.chunk.css",
+    "main.js": "/IT-Kamasutra_Todolist/static/js/main.49339641.chunk.js",
+    "main.js.map": "/IT-Kamasutra_Todolist/static/js/main.49339641.chunk.js.map",
+    "runtime-main.js": "/IT-Kamasutra_Todolist/static/js/runtime-main.caaa511a.js",
+    "runtime-main.js.map": "/IT-Kamasutra_Todolist/static/js/runtime-main.caaa511a.js.map",
+    "static/js/2.31d476de.chunk.js": "/IT-Kamasutra_Todolist/static/js/2.31d476de.chunk.js",
+    "static/js/2.31d476de.chunk.js.map": "/IT-Kamasutra_Todolist/static/js/2.31d476de.chunk.js.map",
+    "index.html": "/IT-Kamasutra_Todolist/index.html",
+    "precache-manifest.7cc2fe17a6f236265f2c72078e6b2835.js": "/IT-Kamasutra_Todolist/precache-manifest.7cc2fe17a6f236265f2c72078e6b2835.js",
+    "service-worker.js": "/IT-Kamasutra_Todolist/service-worker.js",
+    "static/css/main.c3b5e57e.chunk.css.map": "/IT-Kamasutra_Todolist/static/css/main.c3b5e57e.chunk.css.map",
+    "static/js/2.31d476de.chunk.js.LICENSE.txt": "/IT-Kamasutra_Todolist/static/js/2.31d476de.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.caaa511a.js",
+    "static/js/2.31d476de.chunk.js",
+    "static/css/main.c3b5e57e.chunk.css",
+    "static/js/main.49339641.chunk.js"
+  ]
+}
