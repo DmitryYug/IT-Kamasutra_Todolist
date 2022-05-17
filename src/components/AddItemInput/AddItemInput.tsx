@@ -1,8 +1,6 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
-import classes from "../Todolist.module.css";
-import {Button} from "@mui/material";
-
-
+import {Button, TextField} from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 
 
 type AddItemInputProps = {
@@ -13,19 +11,19 @@ type AddItemInputProps = {
 const AddItemInput: React.FC<AddItemInputProps> = ({addItem}) => {
 
     let [newItemValue, setNewItem] = useState('')
-    let [error, setError] = useState('')
+    let [error, setError] = useState<boolean>(false)
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setError('')
+        setError(false)
         setNewItem(e.currentTarget.value)
     }
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             if (newItemValue.trim() === '') {
-                setError('! No tasks added !')
+                setError(true)
                 return
             } else {
-                setError('')
+                setError(false)
             }
             addItem(newItemValue)
             setNewItem('')
@@ -33,29 +31,43 @@ const AddItemInput: React.FC<AddItemInputProps> = ({addItem}) => {
     }
     const addItemOnclickHandler = () => {
         if (newItemValue.trim() === '') {
-            setError('! No tasks added !')
+            setError(true)
             return
         } else {
-            setError('')
+            setError(false)
+
         }
         addItem(newItemValue)
         setNewItem('')
     }
-    const currentClass = error ? classes.error : ''
+
+    const currentInput = error ?
+        <TextField
+            error
+            id="outlined-error"
+            label="Empty input"
+            defaultValue="Hello World"
+            value={newItemValue}
+            onChange={onChangeHandler}
+            onKeyPress={onKeyPressHandler}
+            size='small'
+        /> :
+        <TextField
+            id="outlined-helperText"
+            label="type..."
+            value={newItemValue}
+            onChange={onChangeHandler}
+            onKeyPress={onKeyPressHandler}
+            size='small'
+        />
 
     return (
-        <div>
-            {/*<InputUnstyled/>*/}
-            <input
-                // placeholder='add new task'
-                value={newItemValue}
-                onChange={onChangeHandler}
-                onKeyPress={onKeyPressHandler}
-                className={currentClass}
-            />
-            <Button variant="contained">Text</Button>
-            <button onClick={addItemOnclickHandler}>+</button>
-            {/*<Button onClick={addItemOnclickHandler}>+</Button>*/}
+        <div style={{margin: '10px 0 10px 0'}}>
+            {currentInput}
+            <Button onClick={addItemOnclickHandler} variant="contained"
+                    style={{maxWidth: '40px', maxHeight: '40px', minWidth: '40px', minHeight: '40px'}}>
+                <AddIcon fontSize='small'/>
+            </Button>
             <div>{error}</div>
         </div>
     )

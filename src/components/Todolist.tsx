@@ -3,6 +3,9 @@ import {TaskFilterType} from "../App";
 import classes from './Todolist.module.css'
 import AddItemInput from "./AddItemInput/AddItemInput";
 import EditableSpan from "./EditableSpan/EditableSpan";
+import {Button, ButtonGroup, Checkbox, IconButton, List, ListItemButton, ListItemText, Tooltip} from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 //PropsTypes
 export type TaskType = {
@@ -26,8 +29,10 @@ type PropsType = {
 
 
 const Todolist: React.FC<PropsType> = (
-    {tdlId,tdlTitle, tasks, filter ,
-        removeTask, onFilter, addTasks, checkBoxChange, removeTDL, spanChange, tdlTitleSpanChange}) => {
+    {
+        tdlId, tdlTitle, tasks, filter,
+        removeTask, onFilter, addTasks, checkBoxChange, removeTDL, spanChange, tdlTitleSpanChange
+    }) => {
 
 //Filter
     const onFilterHandler = (filter: TaskFilterType) => {
@@ -60,14 +65,24 @@ const Todolist: React.FC<PropsType> = (
             spanChange(tdlId, tasksObj.id, newTitle)
         }
         return (
-            <li key={tasksObj.id}>
-                <input type="checkbox" checked={tasksObj.isDone} onChange={checkBoxOnChangeHandler}/>
-                <EditableSpan
-                    onChange={(newTitle) => {onChangeTitleHandler(newTitle)}}
-                    title={tasksObj.title}
-                />
-                <button onClick={() => onRemoveTask(tdlId, tasksObj.id)}>х</button>
-            </li>
+            <List>
+                <div key={tasksObj.id}>
+                    <Checkbox
+                        checked={tasksObj.isDone}
+                        onChange={checkBoxOnChangeHandler}
+                        inputProps={{'aria-label': 'controlled'}}
+                    />
+
+
+                    <EditableSpan
+                        onChange={(newTitle) => {onChangeTitleHandler(newTitle)}}
+                        title={tasksObj.title}
+                    />
+                    <IconButton onClick={() => onRemoveTask(tdlId, tasksObj.id)}>
+                        <DeleteIcon fontSize="small"/>
+                    </IconButton>
+                </div>
+            </List>
         )
     })
 
@@ -77,20 +92,29 @@ const Todolist: React.FC<PropsType> = (
         <div>
             <h3>
                 <EditableSpan
-                    onChange={(newTitle) => {onChangeTdlTitleHandler(newTitle)}}
+                    onChange={(newTitle) => {
+                        onChangeTdlTitleHandler(newTitle)
+                    }}
                     title={tdlTitle}
                 />
-                <button onClick={onRemoveTdl}>x</button>
+                <IconButton onClick={() => onRemoveTdl()}>
+                    <DeleteIcon fontSize="small"/>
+                </IconButton>
             </h3>
-            <AddItemInput addItem={onClickAddTask}/>
-            <ul>
-                {taskElements}
-            </ul>
+            <AddItemInput
+                addItem={onClickAddTask}
+            />
             <div>
-                <button className={filter === 'all' ? classes.activeFilter : ''} onClick={() => onFilterHandler('all')}>All</button>
-                <button className={filter === 'active' ? classes.activeFilter : ''} onClick={() => onFilterHandler('active')}>Active</button>
-                <button className={filter === 'completed' ? classes.activeFilter : ''} onClick={() => onFilterHandler('completed')}>Completed</button>
+                {taskElements}
             </div>
+            <ButtonGroup aria-label="medium secondary button group">
+                <Button variant={filter === 'all' ? 'contained' : 'outlined'}
+                        onClick={() => onFilterHandler('all')}>all</Button>
+                <Button variant={filter === 'active' ? 'contained' : 'outlined'}
+                        onClick={() => onFilterHandler('active')}>active</Button>
+                <Button variant={filter === 'completed' ? 'contained' : 'outlined'}
+                        onClick={() => onFilterHandler('completed')}>completed</Button>
+            </ButtonGroup>
         </div>
     )
 }
