@@ -1,9 +1,8 @@
 import React, {KeyboardEvent, ChangeEvent, useState} from "react";
 import {TaskFilterType} from "../App";
-import classes from './Todolist.module.css'
 import AddItemInput from "./AddItemInput/AddItemInput";
 import EditableSpan from "./EditableSpan/EditableSpan";
-import {Button, ButtonGroup, Checkbox, IconButton, List, ListItemButton, ListItemText, Tooltip} from "@mui/material";
+import {Button, ButtonGroup, Checkbox, IconButton, List} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 
 
@@ -31,7 +30,8 @@ type PropsType = {
 const Todolist: React.FC<PropsType> = (
     {
         tdlId, tdlTitle, tasks, filter,
-        removeTask, onFilter, addTasks, checkBoxChange, removeTDL, spanChange, tdlTitleSpanChange
+        removeTask, onFilter, addTasks, checkBoxChange, removeTDL, spanChange,
+        tdlTitleSpanChange
     }) => {
 
 //Filter
@@ -57,8 +57,9 @@ const Todolist: React.FC<PropsType> = (
         tdlTitleSpanChange(tdlId, newTitle)
     }
 
-    const taskElements = tasks.map((tasksObj) => {
+    const taskElements = tasks?.map((tasksObj) => {
         const checkBoxOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+            console.log(e.currentTarget.checked)
             checkBoxChange(tdlId, tasksObj.id, e.currentTarget.checked)
         }
         const onChangeTitleHandler = (newTitle: string) => {
@@ -72,10 +73,10 @@ const Todolist: React.FC<PropsType> = (
                         onChange={checkBoxOnChangeHandler}
                         inputProps={{'aria-label': 'controlled'}}
                     />
-
-
                     <EditableSpan
-                        onChange={(newTitle) => {onChangeTitleHandler(newTitle)}}
+                        onChange={(newTitle) => {
+                            onChangeTitleHandler(newTitle)
+                        }}
                         title={tasksObj.title}
                     />
                     <IconButton onClick={() => onRemoveTask(tdlId, tasksObj.id)}>

@@ -1,13 +1,20 @@
-import { v1 } from "uuid"
+import {v1} from "uuid"
 import {TasksTypes} from "../App";
-import {addTdlACType} from "./todolists-reducer";
+import {addTdlACType, removeTdlACType} from "./todolists-reducer";
 
-type TaskStateType = {
+export type TasksStateType = {
     [key: string]: Array<TasksTypes>
 }
 
+type tasksReducerACTypes = addTaskACType
+    | removeTaskACType
+    | checkBoxChangeACType
+    | spanChangeACType
+    | addTdlACType
+    | removeTdlACType
 
-export const tasksReducer = (state: TaskStateType, action: tasksReducerACTypes) => {
+
+export const tasksReducer = (state: TasksStateType, action: tasksReducerACTypes) => {
     switch (action.type) {
         case "ADD-TASK": {
             let newTaskObj = {id: v1(), title: action.payload.newTaskValue, isDone: false}
@@ -28,16 +35,15 @@ export const tasksReducer = (state: TaskStateType, action: tasksReducerACTypes) 
             })
         }
         case "CHECKBOX-CHANGE": {
-            let currentTask = state[action.payload.tdlId].find (
-                task => task.id === action.payload.taskId
-            )
+            let currentTask = state[action.payload.tdlId].find(task => task.id === action.payload.taskId)
+            console.log(currentTask)
             if (currentTask) {
-                currentTask.isDone = action.payload.checked
+                currentTask.isDone = !action.payload.checked
             }
             return state
         }
         case "SPAN-CHANGE": {
-            let currentTask = state[action.payload.tdlId].find (
+            let currentTask = state[action.payload.tdlId].find(
                 task => task.id === action.payload.taskId
             )
             if (currentTask) {
@@ -45,16 +51,22 @@ export const tasksReducer = (state: TaskStateType, action: tasksReducerACTypes) 
             }
             return state
         }
-        // case "ADD-TDL": {
-        //     return [
-        //
-        //     ]
-        // }
-        default: return state
+        case "ADD-TDL": {
+            // debugger
+            return ({
+                ...state,
+                [action.payload.newTdlId]: []
+            })
+
+        }
+        case "REMOVE-TDL": {
+            delete state[action.payload.tdlId]
+            return state
+        }
+        default:
+            return state
     }
 }
-
-type tasksReducerACTypes = addTaskACType | removeTaskACType | checkBoxChangeACType | spanChangeACType | addTdlACType
 
 type addTaskACType = ReturnType<typeof AddTaskAC>
 type removeTaskACType = ReturnType<typeof RemoveTaskAC>
@@ -66,7 +78,7 @@ export const AddTaskAC = (tdlId: string, newTaskValue: string) => {
     return {
         type: 'ADD-TASK',
         payload: {
-            tdlId: tdlId ,
+            tdlId: tdlId,
             newTaskValue: newTaskValue
         }
     } as const
@@ -75,7 +87,7 @@ export const RemoveTaskAC = (tdlId: string, taskId: string) => {
     return {
         type: 'REMOVE-TASK',
         payload: {
-            tdlId: tdlId ,
+            tdlId: tdlId,
             taskId: taskId
         }
     } as const
@@ -84,7 +96,7 @@ export const CheckBoxChangeAC = (tdlId: string, taskId: string, checked: boolean
     return {
         type: 'CHECKBOX-CHANGE',
         payload: {
-            tdlId: tdlId ,
+            tdlId: tdlId,
             taskId: taskId,
             checked: checked
         }
@@ -94,10 +106,9 @@ export const SpanChangeAC = (tdlId: string, taskId: string, newTitle: string) =>
     return {
         type: 'SPAN-CHANGE',
         payload: {
-            tdlId: tdlId ,
+            tdlId: tdlId,
             taskId: taskId,
             newTitle: newTitle
         }
     } as const
 }
-

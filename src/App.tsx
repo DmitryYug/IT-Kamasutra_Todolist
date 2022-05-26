@@ -29,37 +29,19 @@ function App() {
     let todolist1Id = v1()
     let todolist2Id = v1()
 
-    // let [tdls, setTdls] = useState<Array<TdlsTypes>>([
-    //     {id: todolist1Id, title: "What to learn", filter: 'all'},
-    //     {id: todolist2Id, title: "What to watch", filter: 'completed'}
-    // ])
-    // let [tasks, setTasks] = useState({
-    //     [todolist1Id]: [
-    //         {id: v1(), title: "CSS", isDone: false},
-    //         {id: v1(), title: "JS", isDone: true},
-    //         {id: v1(), title: "React", isDone: false},
-    //         {id: v1(), title: "Redux", isDone: false},
-    //     ],
-    //     [todolist2Id]: [
-    //         {id: v1(), title: "Batman", isDone: false},
-    //         {id: v1(), title: "NBA", isDone: true},
-    //         {id: v1(), title: "It-kamasutra", isDone: false},
-    //     ]
-    // })
-
-
     let [tdls, tdlsDispatch] = useReducer (todolistsReducer,
         [
             {id: todolist1Id, title: "What to learn", filter: 'all'},
             {id: todolist2Id, title: "What to watch", filter: 'completed'}
         ]
     )
+
     let [tasks, tasksDispatch] = useReducer (tasksReducer,
         {
             [todolist1Id]: [
                 {id: v1(), title: "CSS", isDone: false},
                 {id: v1(), title: "JS", isDone: true},
-                {id: v1(), title: "React", isDone: false},
+                {id: v1(), title: "React", isDone: true},
                 {id: v1(), title: "Redux", isDone: false},
             ],
             [todolist2Id]: [
@@ -72,51 +54,26 @@ function App() {
 
 //Adding
     function addTask (tdlId: string, newTaskValue: string) {
-        // let newTaskObj = {id: v1(), title: newTaskValue, isDone: false}
-        // setTasks({
-        //         ...tasks,
-        //         [tdlId]: [
-        //             newTaskObj,
-        //             ...tasks[tdlId]
-        //         ]
-        //     }
-        // )
         tasksDispatch(AddTaskAC(tdlId, newTaskValue))
     }
 
     function addTdl(newTdlTitle: string) {
-        // let newTDLId = v1()
-        // let newTDL: TdlsTypes = {id: newTDLId, title: newTdlTitle, filter: 'all'}
-        // setTdls([
-        //     newTDL,
-        //     ...tdls
-        // ])
-        // setAllTasksObj({
-        //         ...allTasksObj,
-        //         [newTDLId]: []
-        //     }
-        // )
-        tdlsDispatch(AddTdlAC(newTdlTitle))
-
+        let newTdlId = v1()
+        tdlsDispatch(AddTdlAC(newTdlId, newTdlTitle))
+        tasksDispatch(AddTdlAC(newTdlId, newTdlTitle))
     }
 
 //Removing
     function removeTask(tdlId: string, taskId: string) {
-        // setTasks({
-        //     ...tasks,
-        //     [tdlId]: tasks[tdlId].filter(task => task.id !== taskId)
-        // })
         tasksDispatch(RemoveTaskAC(tdlId, taskId))
     }
 
     function removeTDL(tdlId: string) {
-        // setTdls(tdls.filter(tl => tl.id !== tdlId))
         tdlsDispatch(RemoveTdlAC(tdlId))
     }
 
 //Filter
     function onFilter(todolistId: string, filter: TaskFilterType) {
-        // setTdls(tdls.map(tl => tl.id === todolistId ? {...tl, filter: filter} : tl))
         tdlsDispatch(OnFilterAC(todolistId, filter))
     }
 
@@ -133,22 +90,10 @@ function App() {
 
 //Editing переделать map
     function spanChange(todolistId: string, taskId: string, newTitle: string) {
-        // let currentTask = tasks[todolistId].find(t => t.id === taskId)
-        // if (currentTask) {
-        //     currentTask.title = newTitle
-        //     setTasks({...tasks})
-        // }
         tasksDispatch(SpanChangeAC(todolistId, taskId, newTitle))
     }
 
     function tdlTitleSpanChange(todolistId: string, newTitle: string) {
-        // let currentTdl = tdls.find(tdl => tdl.id === todolistId)
-        // if (currentTdl) {
-        //     currentTdl.title = newTitle
-        // }
-        // setTdls([
-        //     ...tdls
-        // ])
         tdlsDispatch(TdlTitleSpanChangeAC(todolistId, newTitle))
     }
 
