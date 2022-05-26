@@ -85,6 +85,7 @@ function App() {
         //     currentTask.isDone = checked
         //     setTasks({...tasks})
         // }
+        debugger
         tasksDispatch(CheckBoxChangeAC(todolistId, taskId, checked))
     }
 
@@ -109,8 +110,8 @@ function App() {
         }
 
         return (
-            <Grid item>
-                <Paper style={{padding: '10px'}} elevation={10}>
+            <Grid item key={tl.id}>
+                <Paper style={{padding: '10px'}} elevation={10} key={tl.id}>
                     <Todolist
                         key={tl.id}
                         tdlId={tl.id}

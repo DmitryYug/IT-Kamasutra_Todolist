@@ -66,7 +66,7 @@ const Todolist: React.FC<PropsType> = (
             spanChange(tdlId, tasksObj.id, newTitle)
         }
         return (
-            <List>
+            <List key={tasksObj.id}>
                 <div key={tasksObj.id}>
                     <Checkbox
                         checked={tasksObj.isDone}

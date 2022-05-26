@@ -38,9 +38,9 @@ export const tasksReducer = (state: TasksStateType, action: tasksReducerACTypes)
             let currentTask = state[action.payload.tdlId].find(task => task.id === action.payload.taskId)
             console.log(currentTask)
             if (currentTask) {
-                currentTask.isDone = !action.payload.checked
+                currentTask.isDone = action.payload.checked
             }
-            return state
+            return {...state}
         }
         case "SPAN-CHANGE": {
             let currentTask = state[action.payload.tdlId].find(
