@@ -1,6 +1,7 @@
 import {tasksReducer, TasksStateType} from "./tasks-reducer";
 import {TdlsTypes} from "../App";
 import {AddTdlAC, todolistsReducer} from "./todolists-reducer";
+import {v1} from "uuid";
 
 test('ids should be equals', () => {
 
@@ -16,8 +17,8 @@ test('ids should be equals', () => {
     const idFromTasks = keys[0];
     const idFromTodolists = endTodolistsState[0].id;
 
-    expect(idFromTasks).toBe(action.payload.newTdlId);
-    expect(idFromTodolists).toBe(action.payload.newTdlId);
+    expect(idFromTasks).toBe(action.payload.newTDLId);
+    expect(idFromTodolists).toBe(action.payload.newTDLId);
 });
 
 

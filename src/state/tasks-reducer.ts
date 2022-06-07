@@ -1,10 +1,8 @@
 import {v1} from "uuid"
-import {TasksTypes} from "../App";
-import {addTdlACType, removeTdlACType} from "./todolists-reducer";
+import {TasksStateType, TasksTypes} from "../App";
+import {addTdlACType, removeTdlACType, todolist1Id, todolist2Id} from "./todolists-reducer";
 
-export type TasksStateType = {
-    [key: string]: Array<TasksTypes>
-}
+
 
 type tasksReducerACTypes = addTaskACType
     | removeTaskACType
@@ -13,8 +11,23 @@ type tasksReducerACTypes = addTaskACType
     | addTdlACType
     | removeTdlACType
 
+let initialState: TasksStateType =  {
+            [todolist1Id]: [
+                {id: v1(), title: "CSS", isDone: false},
+                {id: v1(), title: "JS", isDone: true},
+                {id: v1(), title: "React", isDone: true},
+                {id: v1(), title: "Redux", isDone: false},
+            ],
+            [todolist2Id]: [
+                {id: v1(), title: "Batman", isDone: false},
+                {id: v1(), title: "NBA", isDone: true},
+                {id: v1(), title: "It-kamasutra", isDone: false},
+            ]
+        }
 
-export const tasksReducer = (state: TasksStateType, action: tasksReducerACTypes) => {
+
+export const tasksReducer = (state: TasksStateType = initialState, action: tasksReducerACTypes) => {
+   debugger
     switch (action.type) {
         case "ADD-TASK": {
             let newTaskObj = {id: v1(), title: action.payload.newTaskValue, isDone: false}
@@ -36,7 +49,6 @@ export const tasksReducer = (state: TasksStateType, action: tasksReducerACTypes)
         }
         case "CHECKBOX-CHANGE": {
             let currentTask = state[action.payload.tdlId].find(task => task.id === action.payload.taskId)
-            console.log(currentTask)
             if (currentTask) {
                 currentTask.isDone = action.payload.checked
             }
@@ -52,10 +64,11 @@ export const tasksReducer = (state: TasksStateType, action: tasksReducerACTypes)
             return state
         }
         case "ADD-TDL": {
-            // debugger
+            // let newTdlId
             return ({
                 ...state,
-                [action.payload.newTdlId]: []
+                // [action.]
+                [action.payload.newTDLId]: []
             })
 
         }

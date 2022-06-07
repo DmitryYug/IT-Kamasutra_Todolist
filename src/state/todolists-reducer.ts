@@ -6,12 +6,20 @@ type todolistACTypes = addTdlACType
     | tdlTitleSpanChangeACType
     | onFilterACType
 
+export const todolist1Id = v1()
+export const todolist2Id = v1()
+
+let initialState: Array<TdlsTypes> =  [
+        {id: todolist1Id, title: "What to learn", filter: 'all'},
+        {id: todolist2Id, title: "What to watch", filter: 'completed'}
+    ]
+
 export const todolistsReducer =
-    (state: Array<TdlsTypes>, action: todolistACTypes): Array<TdlsTypes> => {
+    (state:Array<TdlsTypes> = initialState, action: todolistACTypes): Array<TdlsTypes> => {
     switch (action.type) {
         case 'ADD-TDL': {
             // let newTDLId = v1()
-            let newTDL = {id: action.payload.newTdlId, title: action.payload.newTdlTitle, filter: 'all' as TaskFilterType}
+            let newTDL = {id: action.payload.newTDLId, title: action.payload.newTdlTitle, filter: 'all' as TaskFilterType}
             return [...state, newTDL]
         }
         case 'REMOVE-TDL': {
@@ -43,11 +51,12 @@ type tdlTitleSpanChangeACType = ReturnType<typeof TdlTitleSpanChangeAC>
 type onFilterACType = ReturnType<typeof OnFilterAC>
 
 
-export const AddTdlAC = (newTdlId: string, newTdlTitle: string) => {
-    // let newTdlId = v1()
+export const AddTdlAC = (newTdlTitle: string) => {
     return {
         type: 'ADD-TDL',
-        payload: {newTdlId, newTdlTitle}
+        payload: {
+            newTDLId: v1(),
+            newTdlTitle}
     } as const
 }
 export const RemoveTdlAC = (tdlId: string) => {
