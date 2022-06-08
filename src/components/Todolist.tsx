@@ -1,9 +1,12 @@
-import React, {KeyboardEvent, ChangeEvent, useState} from "react";
+import React, {ChangeEvent} from "react";
 import {TaskFilterType} from "../App";
 import AddItemInput from "./AddItemInput/AddItemInput";
 import EditableSpan from "./EditableSpan/EditableSpan";
 import {Button, ButtonGroup, Checkbox, IconButton, List} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
+import {useDispatch} from "react-redux";
+import {OnFilterAC, RemoveTdlAC, TdlTitleSpanChangeAC} from "../state/todolists-reducer";
+import {AddTaskAC, CheckBoxChangeAC, RemoveTaskAC, SpanChangeAC} from "../state/tasks-reducer";
 
 
 //PropsTypes
@@ -15,55 +18,45 @@ export type TaskType = {
 type PropsType = {
     tdlId: string
     tdlTitle: string
-    tasks: Array<TaskType>
-    removeTask: (todolistId: string, taskId: string) => void
-    addTasks: (tlId: string, newTaskValue: string) => void
-    onFilter: (todolistId: string, filter: TaskFilterType) => void
-    checkBoxChange: (todolistId: string, taskId: string, checked: boolean) => void
-    spanChange: (todolistId: string, taskId: string, newTitle: string) => void
-    tdlTitleSpanChange: (todolistId: string, newTitle: string) => void
     filter: TaskFilterType
-    removeTDL: (todolistId: string) => void
+    tasks: Array<TaskType>
 }
 
 
 const Todolist: React.FC<PropsType> = (
-    {
-        tdlId, tdlTitle, tasks, filter,
-        removeTask, onFilter, addTasks, checkBoxChange, removeTDL, spanChange,
-        tdlTitleSpanChange
-    }) => {
+    {tdlId, tdlTitle, tasks, filter,}) => {
+
+    let dispatch = useDispatch()
 
 //Filter
     const onFilterHandler = (filter: TaskFilterType) => {
-        onFilter(tdlId, filter)
+        dispatch(OnFilterAC(tdlId, filter))
     }
 
 //Adding
     const onClickAddTask = (taskValue: string) => {
-        addTasks(tdlId, taskValue)
+        dispatch(AddTaskAC(tdlId, taskValue))
     }
 
 //Removing
     const onRemoveTask = (tdlId: string, taskId: string) => {
-        removeTask(tdlId, taskId)
+        dispatch(RemoveTaskAC(tdlId, taskId))
     }
     const onRemoveTdl = () => {
-        removeTDL(tdlId)
+        dispatch(RemoveTdlAC(tdlId))
     }
 
 //Editing
     const onChangeTdlTitleHandler = (newTitle: string) => {
-        tdlTitleSpanChange(tdlId, newTitle)
+        dispatch(TdlTitleSpanChangeAC(tdlId, newTitle))
     }
 
     const taskElements = tasks?.map((tasksObj) => {
         const checkBoxOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-            console.log(e.currentTarget.checked)
-            checkBoxChange(tdlId, tasksObj.id, e.currentTarget.checked)
+            dispatch(CheckBoxChangeAC(tdlId, tasksObj.id, e.currentTarget.checked))
         }
         const onChangeTitleHandler = (newTitle: string) => {
-            spanChange(tdlId, tasksObj.id, newTitle)
+            dispatch(SpanChangeAC(tdlId, tasksObj.id, newTitle))
         }
         return (
             <List key={tasksObj.id}>

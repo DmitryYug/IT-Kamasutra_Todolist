@@ -1,18 +1,10 @@
-import React, {useReducer, useState} from 'react';
+import React from 'react';
 import './App.css';
 import Todolist from "./components/Todolist";
-import {v1} from 'uuid';
 import AddItemInput from "./components/AddItemInput/AddItemInput";
 import {Paper, Container, Grid} from "@mui/material";
 import ButtonAppBar from "./components/AppBar/AppBar";
-import {AddTdlAC, OnFilterAC, RemoveTdlAC, TdlTitleSpanChangeAC, todolistsReducer} from "./state/todolists-reducer";
-import {
-    AddTaskAC,
-    CheckBoxChangeAC,
-    RemoveTaskAC,
-    SpanChangeAC,
-    tasksReducer,
-} from "./state/tasks-reducer";
+import {AddTdlAC} from "./state/todolists-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./state/store";
 
@@ -34,74 +26,14 @@ export type TasksStateType = {
 }
 
 function App() {
-    // console.log(store)
-//States
-//     let todolist1Id = v1()
-//     let todolist2Id = v1()
 
-    let tdls = useSelector<AppRootStateType, Array<TdlsTypes>>( state => state.todolists)
-    let tasks = useSelector<AppRootStateType, TasksStateType>( state => state.tasks)
-    let dispatch = useDispatch()
-    console.log(tasks)
-    // let [tdls, tdlsDispatch] = useReducer (todolistsReducer,
-    //     [
-    //         {id: todolist1Id, title: "What to learn", filter: 'all'},
-    //         {id: todolist2Id, title: "What to watch", filter: 'completed'}
-    //     ]
-    // )
-    //
-    // let [tasks, tasksDispatch] = useReducer (tasksReducer,
-    //     {
-    //         [todolist1Id]: [
-    //             {id: v1(), title: "CSS", isDone: false},
-    //             {id: v1(), title: "JS", isDone: true},
-    //             {id: v1(), title: "React", isDone: true},
-    //             {id: v1(), title: "Redux", isDone: false},
-    //         ],
-    //         [todolist2Id]: [
-    //             {id: v1(), title: "Batman", isDone: false},
-    //             {id: v1(), title: "NBA", isDone: true},
-    //             {id: v1(), title: "It-kamasutra", isDone: false},
-    //         ]
-    //     })
+    const tdls = useSelector<AppRootStateType, Array<TdlsTypes>>( state => state.todolists)
+    const tasks = useSelector<AppRootStateType, TasksStateType>( state => state.tasks)
+    const dispatch = useDispatch()
 
-
-//Adding
-    function addTask (tdlId: string, newTaskValue: string) {
-        dispatch(AddTaskAC(tdlId, newTaskValue))
-    }
 
     function addTdl(newTdlTitle: string) {
-        // let action = AddTdlAC(newTdlTitle)
         dispatch(AddTdlAC(newTdlTitle))
-    }
-
-//Removing
-    function removeTask(tdlId: string, taskId: string) {
-        dispatch(RemoveTaskAC(tdlId, taskId))
-    }
-
-    function removeTDL(tdlId: string) {
-        dispatch(RemoveTdlAC(tdlId))
-    }
-
-//Filter
-    function onFilter(todolistId: string, filter: TaskFilterType) {
-        dispatch(OnFilterAC(todolistId, filter))
-    }
-
-//Checkbox
-    function checkBoxChange(todolistId: string, taskId: string, checked: boolean) {
-        dispatch(CheckBoxChangeAC(todolistId, taskId, checked))
-    }
-
-//Editing переделать map
-    function spanChange(todolistId: string, taskId: string, newTitle: string) {
-        dispatch(SpanChangeAC(todolistId, taskId, newTitle))
-    }
-
-    function tdlTitleSpanChange(todolistId: string, newTitle: string) {
-        dispatch(TdlTitleSpanChangeAC(todolistId, newTitle))
     }
 
 //Elements + Filter
@@ -124,13 +56,6 @@ function App() {
                         tdlTitle={tl.title}
                         tasks={filteredTasksForTodolist}
                         filter={tl.filter}
-                        removeTask={removeTask}
-                        addTasks={addTask}
-                        onFilter={onFilter}
-                        checkBoxChange={checkBoxChange}
-                        spanChange={spanChange}
-                        tdlTitleSpanChange={tdlTitleSpanChange}
-                        removeTDL={removeTDL}
                     />
                 </Paper>
             </Grid>

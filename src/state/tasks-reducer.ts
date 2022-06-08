@@ -27,7 +27,6 @@ let initialState: TasksStateType =  {
 
 
 export const tasksReducer = (state: TasksStateType = initialState, action: tasksReducerACTypes) => {
-   debugger
     switch (action.type) {
         case "ADD-TASK": {
             let newTaskObj = {id: v1(), title: action.payload.newTaskValue, isDone: false}

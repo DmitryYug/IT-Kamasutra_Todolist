@@ -13,11 +13,13 @@ const EditableSpan: React.FC<EditableSpanPropsType> = ({title, onChange}) => {
     const editModeEnabled = () => {
         setEditMode(true)
     }
+
     const viewModeEnabled = () => {
         setEditMode(false)
         setNewTitle(newTitle)
         onChange(newTitle)
     }
+
     const viewModeEnabledOnKeyPress = (e: KeyboardEvent<HTMLSpanElement>) => {
         if(e.key === 'Enter') {
           viewModeEnabled()
