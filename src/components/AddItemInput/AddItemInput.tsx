@@ -8,8 +8,8 @@ type AddItemInputProps = {
     // id?: string
 }
 
-const AddItemInput: React.FC<AddItemInputProps> = ({addItem}) => {
-
+const AddItemInput: React.FC<AddItemInputProps> = React.memo(({addItem}) => {
+    console.log('AddItemInput called')
     let [newItemValue, setNewItem] = useState('')
     let [error, setError] = useState<boolean>(false)
 
@@ -71,6 +71,6 @@ const AddItemInput: React.FC<AddItemInputProps> = ({addItem}) => {
             <div>{error}</div>
         </div>
     )
-}
+})
 
 export default AddItemInput

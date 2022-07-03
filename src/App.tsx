@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import './App.css';
 import Todolist from "./components/Todolist";
 import AddItemInput from "./components/AddItemInput/AddItemInput";
@@ -26,26 +26,25 @@ export type TasksStateType = {
 }
 
 function App() {
-
+    console.log('App is called')
     const tdls = useSelector<AppRootStateType, Array<TdlsTypes>>( state => state.todolists)
     const tasks = useSelector<AppRootStateType, TasksStateType>( state => state.tasks)
     const dispatch = useDispatch()
 
-
-    function addTdl(newTdlTitle: string) {
+    const addTdl = useCallback((newTdlTitle: string) => {
         dispatch(AddTdlAC(newTdlTitle))
-    }
+    }, [])
 
 //Elements + Filter
     const tdlsElements = tdls.map(tl => {
 
-        let filteredTasksForTodolist = tasks[tl.id]
-        if (tl.filter === 'completed') {
-            filteredTasksForTodolist = filteredTasksForTodolist.filter(task => task.isDone)
-        }
-        if (tl.filter === 'active') {
-            filteredTasksForTodolist = filteredTasksForTodolist.filter(task => !task.isDone)
-        }
+        let currentTasks = tasks[tl.id]
+        // if (tl.filter === 'completed') {
+        //     filteredTasksForTodolist = filteredTasksForTodolist.filter(task => task.isDone)
+        // }
+        // if (tl.filter === 'active') {
+        //     filteredTasksForTodolist = filteredTasksForTodolist.filter(task => !task.isDone)
+        // }
 
         return (
             <Grid item key={tl.id}>
@@ -54,12 +53,11 @@ function App() {
                         key={tl.id}
                         tdlId={tl.id}
                         tdlTitle={tl.title}
-                        tasks={filteredTasksForTodolist}
+                        tasks={currentTasks}
                         filter={tl.filter}
                     />
                 </Paper>
             </Grid>
-
         )
     })
 

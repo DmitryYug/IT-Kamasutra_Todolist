@@ -12,17 +12,17 @@ type tasksReducerACTypes = addTaskACType
     | removeTdlACType
 
 let initialState: TasksStateType =  {
-            [todolist1Id]: [
-                {id: v1(), title: "CSS", isDone: false},
-                {id: v1(), title: "JS", isDone: true},
-                {id: v1(), title: "React", isDone: true},
-                {id: v1(), title: "Redux", isDone: false},
-            ],
-            [todolist2Id]: [
-                {id: v1(), title: "Batman", isDone: false},
-                {id: v1(), title: "NBA", isDone: true},
-                {id: v1(), title: "It-kamasutra", isDone: false},
-            ]
+            // [todolist1Id]: [
+            //     {id: v1(), title: "CSS", isDone: false},
+            //     {id: v1(), title: "JS", isDone: true},
+            //     {id: v1(), title: "React", isDone: true},
+            //     {id: v1(), title: "Redux", isDone: false},
+            // ],
+            // [todolist2Id]: [
+            //     {id: v1(), title: "Batman", isDone: false},
+            //     {id: v1(), title: "NBA", isDone: true},
+            //     {id: v1(), title: "It-kamasutra", isDone: false},
+            // ]
         }
 
 
