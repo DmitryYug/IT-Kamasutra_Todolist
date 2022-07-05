@@ -14,7 +14,7 @@ export type TaskPropsType = {
 
 export const Task = React.memo((props: TaskPropsType) => {
     console.log('TASK is called')
-    console.log(props.isDone)
+
     let dispatch = useDispatch()
 
     const onRemoveTask = useCallback(() => {
@@ -38,14 +38,10 @@ export const Task = React.memo((props: TaskPropsType) => {
                     inputProps={{'aria-label': 'controlled'}}
                 />
                 <EditableSpan
-                    onChange={(newTitle) => {
-                        onChangeTitleHandler(newTitle)
-                    }}
+                    onChange={onChangeTitleHandler}
                     title={props.editedTitle}
                 />
-                <IconButton onClick={ onRemoveTask
-                    // () => props.onRemoveTask(props.tdlId, props.taskId)
-                }>
+                <IconButton onClick={onRemoveTask}>
                     <DeleteIcon fontSize="small"/>
                 </IconButton>
             </div>

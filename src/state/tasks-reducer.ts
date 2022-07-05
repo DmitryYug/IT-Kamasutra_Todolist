@@ -48,7 +48,7 @@ export const tasksReducer = (state: TasksStateType = initialState, action: tasks
         case "CHECKBOX-CHANGE": {
             return {
                 ...state,
-                [action.payload.taskId]: state[action.payload.tdlId]
+                [action.payload.tdlId]: state[action.payload.tdlId]
                     .map(task => task.id === action.payload.taskId
                         ? {...task, isDone: action.payload.checked}
                         : task

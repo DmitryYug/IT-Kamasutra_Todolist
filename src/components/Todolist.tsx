@@ -75,9 +75,7 @@ const Todolist: React.FC<PropsType> = React.memo((
         <div>
             <h3>
                 <EditableSpan
-                    onChange={(newTitle) => {
-                        onChangeTdlTitleHandler(newTitle)
-                    }}
+                    onChange={onChangeTdlTitleHandler}
                     title={tdlTitle}
                 />
                 <IconButton onClick={() => onRemoveTdl()}>

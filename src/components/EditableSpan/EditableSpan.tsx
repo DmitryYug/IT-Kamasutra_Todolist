@@ -6,7 +6,9 @@ type EditableSpanPropsType = {
 }
 
 const EditableSpan: React.FC<EditableSpanPropsType> = React.memo(({title, onChange}) => {
+
     console.log('EDITABLESPAN is called ')
+
     let [editMode, setEditMode] = useState<boolean>(false)
     let [newTitle, setNewTitle] = useState<string>(title)
 
