@@ -33,18 +33,12 @@ function App() {
 
     const addTdl = useCallback((newTdlTitle: string) => {
         dispatch(AddTdlAC(newTdlTitle))
-    }, [])
+    }, [dispatch])
 
 //Elements + Filter
     const tdlsElements = tdls.map(tl => {
 
         let currentTasks = tasks[tl.id]
-        // if (tl.filter === 'completed') {
-        //     filteredTasksForTodolist = filteredTasksForTodolist.filter(task => task.isDone)
-        // }
-        // if (tl.filter === 'active') {
-        //     filteredTasksForTodolist = filteredTasksForTodolist.filter(task => !task.isDone)
-        // }
 
         return (
             <Grid item key={tl.id}>

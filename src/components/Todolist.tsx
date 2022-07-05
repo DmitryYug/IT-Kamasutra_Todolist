@@ -1,27 +1,22 @@
-import React, {ChangeEvent, useCallback} from "react";
-import {TaskFilterType} from "../App";
+import React, {useCallback} from "react";
+import {TaskFilterType, TasksTypes} from "../App";
 import AddItemInput from "./AddItemInput/AddItemInput";
 import EditableSpan from "./EditableSpan/EditableSpan";
-import {Button, ButtonGroup, Checkbox, IconButton, List} from "@mui/material";
+import {Button, ButtonGroup, IconButton} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useDispatch} from "react-redux";
 import {OnFilterAC, RemoveTdlAC, TdlTitleSpanChangeAC} from "../state/todolists-reducer";
-import {AddTaskAC, CheckBoxChangeAC, RemoveTaskAC, SpanChangeAC} from "../state/tasks-reducer";
+import {AddTaskAC} from "../state/tasks-reducer";
+import {Task} from "./Task/Task";
 
 
 //PropsTypes
-export type TaskType = {
-    id: string,
-    title: string,
-    isDone: boolean,
-}
 type PropsType = {
     tdlId: string
     tdlTitle: string
     filter: TaskFilterType
-    tasks: Array<TaskType>
+    tasks: Array<TasksTypes>
 }
-
 
 const Todolist: React.FC<PropsType> = React.memo((
     {
@@ -32,30 +27,28 @@ const Todolist: React.FC<PropsType> = React.memo((
     }) => {
 
     console.log('TDL is called')
+
     let dispatch = useDispatch()
 
 //Filter
-    const onFilterHandler = (filter: TaskFilterType) => {
+    const onFilterHandler = useCallback((filter: TaskFilterType) => {
         dispatch(OnFilterAC(tdlId, filter))
-    }
+    },[dispatch, tdlId])
 
 //Adding
     const onClickAddTask = useCallback((taskValue: string) => {
         dispatch(AddTaskAC(tdlId, taskValue))
-    }, [])
+    }, [dispatch, tdlId])
 
 //Removing
-    const onRemoveTask = (tdlId: string, taskId: string) => {
-        dispatch(RemoveTaskAC(tdlId, taskId))
-    }
-    const onRemoveTdl = () => {
+    const onRemoveTdl = useCallback(() => {
         dispatch(RemoveTdlAC(tdlId))
-    }
+    },[dispatch, tdlId])
 
 //Editing
-    const onChangeTdlTitleHandler = (newTitle: string) => {
+    const onChangeTdlTitleHandler = useCallback((newTitle: string) => {
         dispatch(TdlTitleSpanChangeAC(tdlId, newTitle))
-    }
+    },[dispatch, tdlId])
 
     if (filter === 'completed') {
         tasks = tasks.filter(task => task.isDone)
@@ -64,33 +57,15 @@ const Todolist: React.FC<PropsType> = React.memo((
         tasks = tasks.filter(task => !task.isDone)
     }
 
-    const taskElements = tasks?.map((tasksObj) => {
-        const checkBoxOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-            dispatch(CheckBoxChangeAC(tdlId, tasksObj.id, e.currentTarget.checked))
-        }
-        const onChangeTitleHandler = (newTitle: string) => {
-            dispatch(SpanChangeAC(tdlId, tasksObj.id, newTitle))
-        }
-
+    const taskElements = tasks?.map(tasksObj => {
         return (
-            <List key={tasksObj.id}>
-                <div key={tasksObj.id}>
-                    <Checkbox
-                        checked={tasksObj.isDone}
-                        onChange={checkBoxOnChangeHandler}
-                        inputProps={{'aria-label': 'controlled'}}
-                    />
-                    <EditableSpan
-                        onChange={(newTitle) => {
-                            onChangeTitleHandler(newTitle)
-                        }}
-                        title={tasksObj.title}
-                    />
-                    <IconButton onClick={() => onRemoveTask(tdlId, tasksObj.id)}>
-                        <DeleteIcon fontSize="small"/>
-                    </IconButton>
-                </div>
-            </List>
+            <Task
+                key={tasksObj.id}
+                tdlId={tdlId}
+                taskId={tasksObj.id}
+                isDone={tasksObj.isDone}
+                editedTitle={tasksObj.title}
+            />
         )
     })
 

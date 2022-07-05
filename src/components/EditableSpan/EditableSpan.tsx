@@ -5,8 +5,8 @@ type EditableSpanPropsType = {
     onChange: (newTitle: string) => void
 }
 
-const EditableSpan: React.FC<EditableSpanPropsType> = ({title, onChange}) => {
-
+const EditableSpan: React.FC<EditableSpanPropsType> = React.memo(({title, onChange}) => {
+    console.log('EDITABLESPAN is called ')
     let [editMode, setEditMode] = useState<boolean>(false)
     let [newTitle, setNewTitle] = useState<string>(title)
 
@@ -25,7 +25,6 @@ const EditableSpan: React.FC<EditableSpanPropsType> = ({title, onChange}) => {
           viewModeEnabled()
         }
     }
-
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setNewTitle(e.currentTarget.value)
     }
@@ -43,6 +42,6 @@ const EditableSpan: React.FC<EditableSpanPropsType> = ({title, onChange}) => {
             {elements}
         </span>
     )
-}
+})
 
 export default EditableSpan

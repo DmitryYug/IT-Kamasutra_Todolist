@@ -1,7 +1,6 @@
 import {v1} from "uuid"
-import {TasksStateType, TasksTypes} from "../App";
-import {addTdlACType, removeTdlACType, todolist1Id, todolist2Id} from "./todolists-reducer";
-
+import {TasksStateType} from "../App";
+import {addTdlACType, removeTdlACType} from "./todolists-reducer";
 
 
 type tasksReducerACTypes = addTaskACType
@@ -11,19 +10,19 @@ type tasksReducerACTypes = addTaskACType
     | addTdlACType
     | removeTdlACType
 
-let initialState: TasksStateType =  {
-            // [todolist1Id]: [
-            //     {id: v1(), title: "CSS", isDone: false},
-            //     {id: v1(), title: "JS", isDone: true},
-            //     {id: v1(), title: "React", isDone: true},
-            //     {id: v1(), title: "Redux", isDone: false},
-            // ],
-            // [todolist2Id]: [
-            //     {id: v1(), title: "Batman", isDone: false},
-            //     {id: v1(), title: "NBA", isDone: true},
-            //     {id: v1(), title: "It-kamasutra", isDone: false},
-            // ]
-        }
+let initialState: TasksStateType = {
+    // [todolist1Id]: [
+    //     {id: v1(), title: "CSS", isDone: false},
+    //     {id: v1(), title: "JS", isDone: true},
+    //     {id: v1(), title: "React", isDone: true},
+    //     {id: v1(), title: "Redux", isDone: false},
+    // ],
+    // [todolist2Id]: [
+    //     {id: v1(), title: "Batman", isDone: false},
+    //     {id: v1(), title: "NBA", isDone: true},
+    //     {id: v1(), title: "It-kamasutra", isDone: false},
+    // ]
+}
 
 
 export const tasksReducer = (state: TasksStateType = initialState, action: tasksReducerACTypes) => {
@@ -47,26 +46,28 @@ export const tasksReducer = (state: TasksStateType = initialState, action: tasks
             })
         }
         case "CHECKBOX-CHANGE": {
-            let currentTask = state[action.payload.tdlId].find(task => task.id === action.payload.taskId)
-            if (currentTask) {
-                currentTask.isDone = action.payload.checked
+            return {
+                ...state,
+                [action.payload.taskId]: state[action.payload.tdlId]
+                    .map(task => task.id === action.payload.taskId
+                        ? {...task, isDone: action.payload.checked}
+                        : task
+                    )
             }
-            return {...state}
         }
         case "SPAN-CHANGE": {
-            let currentTask = state[action.payload.tdlId].find(
-                task => task.id === action.payload.taskId
-            )
-            if (currentTask) {
-                currentTask.title = action.payload.newTitle
+            return {
+                ...state,
+                [action.payload.tdlId]: state[action.payload.tdlId]
+                    .map(task => task.id === action.payload.taskId
+                        ? {...task, title: action.payload.newTitle}
+                        : task
+                    )
             }
-            return state
         }
         case "ADD-TDL": {
-            // let newTdlId
             return ({
                 ...state,
-                // [action.]
                 [action.payload.newTDLId]: []
             })
 
