@@ -1,12 +1,12 @@
-import React, {useCallback} from "react";
-import {TaskFilterType, TasksTypes} from "../App";
+import React, {ChangeEvent, useCallback} from "react";
+import {TaskFilterType, TasksType} from "../App";
 import AddItemInput from "./AddItemInput/AddItemInput";
 import EditableSpan from "./EditableSpan/EditableSpan";
 import {Button, ButtonGroup, IconButton} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useDispatch} from "react-redux";
 import {OnFilterAC, RemoveTdlAC, TdlTitleSpanChangeAC} from "../state/todolists-reducer";
-import {AddTaskAC} from "../state/tasks-reducer";
+import {AddTaskAC, CheckBoxChangeAC, RemoveTaskAC, SpanChangeAC} from "../state/tasks-reducer";
 import {Task} from "./Task/Task";
 
 
@@ -15,7 +15,7 @@ type PropsType = {
     tdlId: string
     tdlTitle: string
     filter: TaskFilterType
-    tasks: Array<TasksTypes>
+    tasks: Array<TasksType>
 }
 
 const Todolist: React.FC<PropsType> = React.memo((
@@ -30,26 +30,28 @@ const Todolist: React.FC<PropsType> = React.memo((
 
     let dispatch = useDispatch()
 
-//Filter
+//Callbacks
+    //Filter
     const onFilterHandler = useCallback((filter: TaskFilterType) => {
         dispatch(OnFilterAC(tdlId, filter))
     },[dispatch, tdlId])
 
-//Adding
+    //Adding
     const onClickAddTask = useCallback((taskValue: string) => {
         dispatch(AddTaskAC(tdlId, taskValue))
     }, [dispatch, tdlId])
 
-//Removing
+    //Removing
     const onRemoveTdl = useCallback(() => {
         dispatch(RemoveTdlAC(tdlId))
     },[dispatch, tdlId])
 
-//Editing
+    //Editing
     const onChangeTdlTitleHandler = useCallback((newTitle: string) => {
         dispatch(TdlTitleSpanChangeAC(tdlId, newTitle))
     },[dispatch, tdlId])
 
+    //Filter
     if (filter === 'completed') {
         tasks = tasks.filter(task => task.isDone)
     }
@@ -57,20 +59,34 @@ const Todolist: React.FC<PropsType> = React.memo((
         tasks = tasks.filter(task => !task.isDone)
     }
 
-    const taskElements = tasks?.map(tasksObj => {
+
+//Children callbacks
+    const onRemoveTask = (taskId: string,) => {
+        dispatch(RemoveTaskAC(tdlId, taskId))
+    }
+    const checkBoxOnChangeHandler = (taskId: string, value: boolean) => {
+        dispatch(CheckBoxChangeAC(tdlId, taskId, value))
+    }
+    const onChangeTitleHandler = (taskId: string, newTitle: string) => {
+        dispatch(SpanChangeAC(tdlId, taskId, newTitle))
+    }
+
+//TaskElements
+    const taskElements = tasks?.map(t => {
         return (
             <Task
-                key={tasksObj.id}
+                key={t.id}
                 tdlId={tdlId}
-                taskId={tasksObj.id}
-                isDone={tasksObj.isDone}
-                editedTitle={tasksObj.title}
+                task={t}
+                onRemoveTask={onRemoveTask}
+                checkBoxOnChangeHandler={checkBoxOnChangeHandler}
+                onChangeTitleHandler={onChangeTitleHandler}
             />
         )
     })
 
 
-//JSX
+//Component return
     return (
         <div>
             <h3>

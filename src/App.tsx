@@ -16,21 +16,24 @@ export type TdlsTypes = {
     title: string,
     filter: TaskFilterType
 }
-export type TasksTypes = {
+export type TasksType = {
     id: string,
     title: string,
     isDone: boolean
 }
 export type TasksStateType = {
-    [key: string]: Array<TasksTypes>
+    [key: string]: Array<TasksType>
 }
 
 function App() {
     console.log('App is called')
+
+// Store
     const tdls = useSelector<AppRootStateType, Array<TdlsTypes>>( state => state.todolists)
     const tasks = useSelector<AppRootStateType, TasksStateType>( state => state.tasks)
     const dispatch = useDispatch()
 
+//Callbacks
     const addTdl = useCallback((newTdlTitle: string) => {
         dispatch(AddTdlAC(newTdlTitle))
     }, [dispatch])
@@ -39,7 +42,6 @@ function App() {
     const tdlsElements = tdls.map(tl => {
 
         let currentTasks = tasks[tl.id]
-
         return (
             <Grid item key={tl.id}>
                 <Paper style={{padding: '10px'}} elevation={10} key={tl.id}>
@@ -55,6 +57,7 @@ function App() {
         )
     })
 
+//Component return
     return (
         <div className="App">
             <ButtonAppBar/>

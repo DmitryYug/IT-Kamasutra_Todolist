@@ -1,45 +1,58 @@
-import React, {ChangeEvent, useCallback} from "react";
+import React, {ChangeEvent} from "react";
 import {Checkbox, IconButton, List} from "@mui/material";
 import EditableSpan from "../EditableSpan/EditableSpan";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {CheckBoxChangeAC, RemoveTaskAC, SpanChangeAC} from "../../state/tasks-reducer";
-import {useDispatch} from "react-redux";
+import {TasksType} from "../../App";
 
 export type TaskPropsType = {
     tdlId: string
-    taskId: string
-    isDone: boolean
-    editedTitle: string
+    task: TasksType
+    onRemoveTask: (taskId: string) => void
+    checkBoxOnChangeHandler: (taskId: string, value: boolean) => void
+    onChangeTitleHandler: (taskId: string, newTitle: string) => void
 }
 
 export const Task = React.memo((props: TaskPropsType) => {
+
     console.log('TASK is called')
+    console.log(props.task)
 
-    let dispatch = useDispatch()
+//Callbacks
 
-    const onRemoveTask = useCallback(() => {
-        dispatch(RemoveTaskAC(props.tdlId, props.taskId))
-    },[dispatch, props.tdlId, props.taskId])
+    //Dispatch Inside Component
+    // let dispatch = useDispatch()
+    // const onRemoveTask = useCallback(() => {
+    //     dispatch(RemoveTaskAC(props.tdlId, props.taskId))
+    // },[dispatch, props.tdlId, props.taskId])
+    // const checkBoxOnChangeHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    //     dispatch(CheckBoxChangeAC(props.tdlId, props.taskId, e.currentTarget.checked))
+    // },[dispatch, props.tdlId, props.taskId])
+    // const onChangeTitleHandler = useCallback((newTitle: string) => {
+    //     dispatch(SpanChangeAC(props.tdlId, props.taskId, newTitle))
+    // },[dispatch, props.tdlId, props.taskId])
 
-    const checkBoxOnChangeHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        dispatch(CheckBoxChangeAC(props.tdlId, props.taskId, e.currentTarget.checked))
-    },[dispatch, props.tdlId, props.taskId])
-
-    const onChangeTitleHandler = useCallback((newTitle: string) => {
-        dispatch(SpanChangeAC(props.tdlId, props.taskId, newTitle))
-    },[dispatch, props.tdlId, props.taskId])
+    //Parent callbacks
+    const onRemoveTask = () => {
+        props.onRemoveTask(props.task.id)
+    }
+    const checkBoxOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        props.checkBoxOnChangeHandler(props.task.id, e.currentTarget.checked )
+    }
+    const onChangeTitleHandler = (newTitle: string) => {
+        props.onChangeTitleHandler(props.task.id, newTitle)
+    }
 
     return (
-        <List key={props.taskId}>
-            <div key={props.taskId}>
+        <List>
+            <div>
                 <Checkbox
-                    checked={props.isDone}
+                    checked={props.task.isDone}
                     onChange={checkBoxOnChangeHandler}
                     inputProps={{'aria-label': 'controlled'}}
                 />
                 <EditableSpan
                     onChange={onChangeTitleHandler}
-                    title={props.editedTitle}
+                    title={props.task.title}
                 />
                 <IconButton onClick={onRemoveTask}>
                     <DeleteIcon fontSize="small"/>

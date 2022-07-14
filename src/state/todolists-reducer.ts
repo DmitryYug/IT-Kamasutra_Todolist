@@ -12,7 +12,7 @@ export const todolist2Id = v1()
 let initialState: Array<TdlsTypes> =  [
         // {id: todolist1Id, title: "What to learn", filter: 'all'},
         // {id: todolist2Id, title: "What to watch", filter: 'completed'}
-    ]
+]
 
 export const todolistsReducer =
     (state:Array<TdlsTypes> = initialState, action: todolistACTypes): Array<TdlsTypes> => {
