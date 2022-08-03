@@ -1,85 +1,71 @@
 import {v1} from "uuid";
-import {TaskFilterType, TdlsTypes} from "../App";
+import {TdlsType, todolistApi} from "../api/todolist-api";
+import {Dispatch} from "redux";
+import {AllActionsType} from "./store";
 
-type todolistACTypes = addTdlACType
-    | removeTdlACType
-    | tdlTitleSpanChangeACType
-    | onFilterACType
+let initialState: TdlDomainType[] = []
 
-export const todolist1Id = v1()
-export const todolist2Id = v1()
-
-let initialState: Array<TdlsTypes> =  [
-        // {id: todolist1Id, title: "What to learn", filter: 'all'},
-        // {id: todolist2Id, title: "What to watch", filter: 'completed'}
-]
+//Types
+export type TaskFilterType = 'all' | 'active' | 'completed'
+export type todolistACTypes =
+    | ReturnType<typeof AddTdlAC>
+    | ReturnType<typeof RemoveTdlAC>
+    | ReturnType<typeof TdlTitleSpanChangeAC>
+    | ReturnType<typeof OnFilterAC>
+    | ReturnType<typeof SetTdlsAC>
+export type TdlDomainType = TdlsType & {
+    filter: TaskFilterType
+}
 
 export const todolistsReducer =
-    (state:Array<TdlsTypes> = initialState, action: todolistACTypes): Array<TdlsTypes> => {
-    switch (action.type) {
-        case 'ADD-TDL': {
-            // let newTDLId = v1()
-            let newTDL = {id: action.payload.newTDLId, title: action.payload.newTdlTitle, filter: 'all' as TaskFilterType}
-            return [...state, newTDL]
+    (state: TdlDomainType[] = initialState, action: AllActionsType): Array<TdlsType> => {
+        switch (action.type) {
+            case 'ADD-TDL':
+                return [
+                // {addedDate: '', order: 1, id: action.newTDLId, title: action.newTdlTitle, filter: 'all' as TaskFilterType},
+                action.todolist,
+                ...state
+            ]
+            case 'REMOVE-TDL':
+                return state.filter(tdl => tdl.id !== action.tdlId)
+            case "CHANGE-TODOLIST-TITLE":
+                return state.map(tdl => tdl.id === action.tdlId ? {...tdl, title : action.newTdlTitle} : tdl)
+            case "ONFILTER":
+                return state.map(tdl => tdl.id === action.tdlId ? {...tdl, filter: action.filter} : tdl)
+            case "SET-TDLS":
+                return action.tdlsArr.map(tl => ({...tl, filter: 'all'}))
+            default: return state
         }
-        case 'REMOVE-TDL': {
-            return state.filter(tdl => tdl.id !== action.payload.tdlId)
-        }
-        case "CHANGE-TODOLIST-TITLE": {
-            let currentTdl = state.find(tdl => tdl.id === action.payload.tdlId)
-            if (currentTdl) {
-                currentTdl.title = action.payload.newTdlTitle
-            }
-            return [...state]
-        }
-        case "ONFILTER": {
-            return state.map(
-                tdl => tdl.id === action.payload.tdlId
-                    ? {...tdl, filter: action.payload.filter}
-                    : tdl
-            )
-        }
-        default:
-            return state
+    }
+
+//ActionCreators
+export const AddTdlAC = (todolist: TdlDomainType) => ({type: 'ADD-TDL', todolist} as const)
+export const RemoveTdlAC = (tdlId: string) => ({type: 'REMOVE-TDL', tdlId} as const)
+export const TdlTitleSpanChangeAC = (tdlId: string, newTdlTitle: string) => ({type: 'CHANGE-TODOLIST-TITLE', tdlId, newTdlTitle} as const)
+export const OnFilterAC = (tdlId: string, filter: TaskFilterType) => ({type: 'ONFILTER', tdlId, filter} as const)
+export const SetTdlsAC = (tdlsArr: TdlsType[]) => ({type: 'SET-TDLS', tdlsArr} as const)
+
+//ThunkCreators
+export const SetTdlsTC = () => {
+    return (dispatch: Dispatch) => {
+        todolistApi.getTodolistApi().then(res => dispatch(SetTdlsAC(res.data)))
     }
 }
-
-
-export type addTdlACType = ReturnType<typeof AddTdlAC>
-export type removeTdlACType = ReturnType<typeof RemoveTdlAC>
-type tdlTitleSpanChangeACType = ReturnType<typeof TdlTitleSpanChangeAC>
-type onFilterACType = ReturnType<typeof OnFilterAC>
-
-
-export const AddTdlAC = (newTdlTitle: string) => {
-    return {
-        type: 'ADD-TDL',
-        payload: {
-            newTDLId: v1(),
-            newTdlTitle}
-    } as const
+export const DeleteTdlTC = (tdlId: string) => {
+    return (dispatch: Dispatch) => {
+        todolistApi.deleteTodolistApi(tdlId)
+            .then(res => dispatch(RemoveTdlAC(tdlId)))
+    }
 }
-export const RemoveTdlAC = (tdlId: string) => {
-    return {
-        type: 'REMOVE-TDL',
-        payload: {tdlId}
-    } as const
+export const CreateTdlTC = (title: string) => {
+    return (dispatch: Dispatch) => {
+        todolistApi.createTodolistApi(title)
+            .then(res => {dispatch(AddTdlAC(res.data.data.item))})
+    }
 }
-export const TdlTitleSpanChangeAC = (tdlId: string, newTdlTitle: string) => {
-    return {
-        type: 'CHANGE-TODOLIST-TITLE',
-        payload: {
-            tdlId: tdlId,
-            newTdlTitle: newTdlTitle
-        }
-    } as const
-}
-export const OnFilterAC = (tdlId: string, filter: TaskFilterType) => {
-    return {
-        type: 'ONFILTER',
-        payload: {
-            tdlId: tdlId,
-            filter: filter
-        }
-    } as const
+export const UpdateTdlTitleTC = (tdlId: string, title: string) => {
+    return (dispatch: Dispatch) => {
+        todolistApi.updateTitleTodolistApi(tdlId, title)
+            .then(res => {dispatch(TdlTitleSpanChangeAC(tdlId, title))})
+    }
 }

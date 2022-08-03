@@ -2,7 +2,7 @@ import React, {ChangeEvent} from "react";
 import {Checkbox, IconButton, List} from "@mui/material";
 import EditableSpan from "../EditableSpan/EditableSpan";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {TasksType} from "../../App";
+import {TaskStatuses, TasksType} from "../../api/tasks-api";
 
 export type TaskPropsType = {
     tdlId: string
@@ -15,10 +15,8 @@ export type TaskPropsType = {
 export const Task = React.memo((props: TaskPropsType) => {
 
     console.log('TASK is called')
-    console.log(props.task)
 
 //Callbacks
-
     //Dispatch Inside Component
     // let dispatch = useDispatch()
     // const onRemoveTask = useCallback(() => {
@@ -46,7 +44,7 @@ export const Task = React.memo((props: TaskPropsType) => {
         <List>
             <div>
                 <Checkbox
-                    checked={props.task.isDone}
+                    checked={props.task.status === TaskStatuses.Completed}
                     onChange={checkBoxOnChangeHandler}
                     inputProps={{'aria-label': 'controlled'}}
                 />

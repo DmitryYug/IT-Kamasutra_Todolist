@@ -1,16 +1,16 @@
-import React, {ChangeEvent, useCallback} from "react";
-import {TaskFilterType, TasksType} from "../App";
+import React, {useCallback, useEffect} from "react";
 import AddItemInput from "./AddItemInput/AddItemInput";
 import EditableSpan from "./EditableSpan/EditableSpan";
 import {Button, ButtonGroup, IconButton} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
-import {useDispatch} from "react-redux";
-import {OnFilterAC, RemoveTdlAC, TdlTitleSpanChangeAC} from "../state/todolists-reducer";
-import {AddTaskAC, CheckBoxChangeAC, RemoveTaskAC, SpanChangeAC} from "../state/tasks-reducer";
+import {DeleteTdlTC, OnFilterAC, TaskFilterType, UpdateTdlTitleTC} from "../state/todolists-reducer";
+import {AddTaskTC, ChangeTaskStatusTC, ChangeTaskTitleTC, DeleteTaskTC, SetTasksTC,} from "../state/tasks-reducer";
 import {Task} from "./Task/Task";
+import {TaskStatuses, TasksType} from "../api/tasks-api";
+import {useAppDispatch} from "../state/store";
 
 
-//PropsTypes
+//Types
 type PropsType = {
     tdlId: string
     tdlTitle: string
@@ -19,16 +19,12 @@ type PropsType = {
 }
 
 const Todolist: React.FC<PropsType> = React.memo((
-    {
-        tdlId,
-        tdlTitle,
-        tasks,
-        filter,
-    }) => {
+    {tdlId, tdlTitle, tasks, filter,}) => {
 
-    console.log('TDL is called')
-
-    let dispatch = useDispatch()
+    let dispatch = useAppDispatch()
+    useEffect(() => {
+        dispatch(SetTasksTC(tdlId))
+    }, [])
 
 //Callbacks
     //Filter
@@ -38,39 +34,42 @@ const Todolist: React.FC<PropsType> = React.memo((
 
     //Adding
     const onClickAddTask = useCallback((taskValue: string) => {
-        dispatch(AddTaskAC(tdlId, taskValue))
+        // dispatch(AddTaskAC(tdlId, taskValue))
+        dispatch(AddTaskTC(tdlId, taskValue))
     }, [dispatch, tdlId])
 
     //Removing
     const onRemoveTdl = useCallback(() => {
-        dispatch(RemoveTdlAC(tdlId))
+        dispatch(DeleteTdlTC(tdlId))
     },[dispatch, tdlId])
 
     //Editing
     const onChangeTdlTitleHandler = useCallback((newTitle: string) => {
-        dispatch(TdlTitleSpanChangeAC(tdlId, newTitle))
+        dispatch(UpdateTdlTitleTC(tdlId, newTitle))
     },[dispatch, tdlId])
 
     //Filter
     if (filter === 'completed') {
-        tasks = tasks.filter(task => task.isDone)
+        tasks = tasks.filter(task => task.status === TaskStatuses.Completed)
     }
     if (filter === 'active') {
-        tasks = tasks.filter(task => !task.isDone)
+        tasks = tasks.filter(task => task.status !== TaskStatuses.Completed)
     }
 
 
 //Children callbacks
     const onRemoveTask = (taskId: string,) => {
-        dispatch(RemoveTaskAC(tdlId, taskId))
+        // dispatch(RemoveTaskAC(tdlId, taskId))
+        dispatch(DeleteTaskTC(tdlId, taskId))
     }
     const checkBoxOnChangeHandler = (taskId: string, value: boolean) => {
-        dispatch(CheckBoxChangeAC(tdlId, taskId, value))
+        value
+            ? dispatch(ChangeTaskStatusTC(tdlId, taskId, TaskStatuses.Completed))
+            : dispatch(ChangeTaskStatusTC(tdlId, taskId, TaskStatuses.New))
     }
     const onChangeTitleHandler = (taskId: string, newTitle: string) => {
-        dispatch(SpanChangeAC(tdlId, taskId, newTitle))
+        dispatch(ChangeTaskTitleTC(tdlId, taskId, newTitle))
     }
-
 //TaskElements
     const taskElements = tasks?.map(t => {
         return (
@@ -84,8 +83,6 @@ const Todolist: React.FC<PropsType> = React.memo((
             />
         )
     })
-
-
 //Component return
     return (
         <div>

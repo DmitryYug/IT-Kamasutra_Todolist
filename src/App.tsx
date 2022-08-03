@@ -1,46 +1,36 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import Todolist from "./components/Todolist";
 import AddItemInput from "./components/AddItemInput/AddItemInput";
 import {Paper, Container, Grid} from "@mui/material";
 import ButtonAppBar from "./components/AppBar/AppBar";
-import {AddTdlAC} from "./state/todolists-reducer";
-import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "./state/store";
+import {
+    CreateTdlTC,
+    SetTdlsTC,
+    TdlDomainType
+} from "./state/todolists-reducer";
+import {useSelector} from "react-redux";
+import {AppRootStateType, useAppDispatch} from "./state/store";
+import {TasksStateType} from "./state/tasks-reducer";
 
-
-export type TaskFilterType = 'all' | 'active' | 'completed'
-
-export type TdlsTypes = {
-    id: string,
-    title: string,
-    filter: TaskFilterType
-}
-export type TasksType = {
-    id: string,
-    title: string,
-    isDone: boolean
-}
-export type TasksStateType = {
-    [key: string]: Array<TasksType>
-}
 
 function App() {
-    console.log('App is called')
 
 // Store
-    const tdls = useSelector<AppRootStateType, Array<TdlsTypes>>( state => state.todolists)
+    const tdls = useSelector<AppRootStateType, TdlDomainType[]>(state => state.todolists)
     const tasks = useSelector<AppRootStateType, TasksStateType>( state => state.tasks)
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
+    useEffect(() => {
+        dispatch(SetTdlsTC())
+    }, [])
 //Callbacks
     const addTdl = useCallback((newTdlTitle: string) => {
-        dispatch(AddTdlAC(newTdlTitle))
+        dispatch(CreateTdlTC(newTdlTitle))
     }, [dispatch])
 
 //Elements + Filter
     const tdlsElements = tdls.map(tl => {
-
         let currentTasks = tasks[tl.id]
         return (
             <Grid item key={tl.id}>
