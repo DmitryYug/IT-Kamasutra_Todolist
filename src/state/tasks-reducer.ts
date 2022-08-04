@@ -2,6 +2,8 @@ import {AddTdlAC, RemoveTdlAC, SetTdlsAC} from "./todolists-reducer";
 import {tasksApi, TaskStatuses, TasksType, TodoTaskPriorities} from "../api/tasks-api";
 import {AllActionsType, AppRootStateType, TDispatch} from "./store";
 import {UpdateTaskModelType} from "../api/todolist-api";
+import {AppErrorTogglerAC, AppPreloaderTogglerAC} from "../app/app-reducer";
+import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
 
 let initialState: TasksStateType = {}
 
@@ -32,10 +34,7 @@ export const tasksReducer = (state: TasksStateType = initialState, action: AllAc
         case "ADD-TASK":
             return {
                 ...state,
-                [action.tdlId]: [
-                    action.task,
-                    ...state[action.tdlId]
-                ]
+                [action.tdlId]: [action.task, ...state[action.tdlId]]
             }
         case "REMOVE-TASK":
             return {...state, [action.tdlId]: state[action.tdlId].filter(task => task.id !== action.taskId)}
@@ -98,28 +97,44 @@ export const UpdateTaskAC = (tdlId: string, taskId: string, model: UpdateDomainT
 //ThunkCreators
 export const SetTasksTC = (todolistId: string) => {
     return (dispatch: TDispatch) => {
-        tasksApi.getTaskApi(todolistId).then(res =>
-            dispatch(SetTasksAC(todolistId, res.data.items))
-        )
+        dispatch(AppPreloaderTogglerAC('loading'))
+        tasksApi.getTaskApi(todolistId)
+            .then(res => {
+                    dispatch(AppPreloaderTogglerAC('succeeded'))
+                    dispatch(SetTasksAC(todolistId, res.data.items))
+                }
+            )
+            .catch(error => {handleServerNetworkError(error, dispatch)})
     }
 }
 export const DeleteTaskTC = (todolistId: string, taskId: string) => {
     return (dispatch: TDispatch) => {
+        dispatch(AppPreloaderTogglerAC('loading'))
         tasksApi.deleteTaskApi(todolistId, taskId)
-            .then(res => dispatch(RemoveTaskAC(todolistId, taskId))
-            )
+            .then(res => {
+                dispatch(AppPreloaderTogglerAC('succeeded'))
+                dispatch(RemoveTaskAC(todolistId, taskId))
+            })
+            .catch(error => {handleServerNetworkError(error, dispatch)})
     }
 }
 export const AddTaskTC = (todolistId: string, title: string) => {
     return (dispatch: TDispatch) => {
+        dispatch(AppPreloaderTogglerAC('loading'))
         tasksApi.createTaskApi(todolistId, title)
-            .then(res => dispatch(AddTaskAC(todolistId, res.data.data.item))
+            .then(res => {
+                    if (res.data.resultCode === 0) {
+                        dispatch(AppPreloaderTogglerAC('succeeded'))
+                        dispatch(AddTaskAC(todolistId, res.data.data.item))
+                    } else {handleServerAppError(res.data, dispatch)}
+                }
             )
+            .catch(error => {handleServerNetworkError(error, dispatch)})
     }
 }
-
 export const UpdateTaskTC = (todolistId: string, taskId: string, domainModel: UpdateDomainTaskModelTypes) => {
     return (dispatch: TDispatch, getState: () => AppRootStateType) => {
+        dispatch(AppPreloaderTogglerAC('loading'))
         const currentTask = getState().tasks[todolistId].find(t => t.id === taskId)
         if (currentTask) {
             const apiModel: UpdateTaskModelType = {
@@ -132,7 +147,11 @@ export const UpdateTaskTC = (todolistId: string, taskId: string, domainModel: Up
                 ...domainModel
             }
             tasksApi.updateTaskApi(todolistId, taskId, apiModel)
-                .then(res => dispatch(UpdateTaskAC(todolistId, taskId, apiModel)))
+                .then(res => {
+                    dispatch(AppPreloaderTogglerAC('succeeded'))
+                    dispatch(UpdateTaskAC(todolistId, taskId, apiModel))
+                })
+                .catch(error => {handleServerNetworkError(error, dispatch)})
         }
     }
 }

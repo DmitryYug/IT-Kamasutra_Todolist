@@ -1,5 +1,5 @@
 import axios from "axios";
-import {TaskFilterType} from "../state/todolists-reducer";
+import {TaskFilterType, TdlDomainType} from "../state/todolists-reducer";
 import {TaskStatuses, TodoTaskPriorities} from "./tasks-api";
 
 
@@ -19,7 +19,7 @@ export type TdlsType = {
     order: number,
     filter: TaskFilterType
 }
-type ResponseType<D = {}> = {
+export type ResponseType<D = {}> = {
     resultCode: number,
     messages: string[],
     data: D
@@ -32,13 +32,19 @@ export type UpdateTaskModelType = {
     status: TaskStatuses
     title: string
 }
+export enum ResultCode  {
+    SUCCESSFULL = 0 ,
+    BAD_RESPONSE = 1 ,
+    CAPTCHA = 10
+
+}
 
 export const todolistApi = {
     getTodolistApi() {
         return apiInstance.get<TdlsType[]>(`/todo-lists`)
     },
     createTodolistApi(title: string) {
-        return apiInstance.post<ResponseType<{item: TdlsType}>>(`/todo-lists`, {title})
+        return apiInstance.post<ResponseType<{item: TdlDomainType}>>(`/todo-lists`, {title})
     },
     deleteTodolistApi(tdlId: string) {
         return apiInstance.delete<ResponseType>(`/todo-lists/${tdlId}`)

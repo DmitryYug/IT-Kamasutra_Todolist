@@ -8,6 +8,7 @@ import {AddTaskTC, DeleteTaskTC, SetTasksTC, UpdateTaskTC,} from "../state/tasks
 import {Task} from "./Task/Task";
 import {TaskStatuses, TasksType} from "../api/tasks-api";
 import {useAppDispatch} from "../state/store";
+import {RequestStatusType} from "../app/app-reducer";
 
 //Types
 type PropsType = {
@@ -15,10 +16,11 @@ type PropsType = {
     tdlTitle: string
     filter: TaskFilterType
     tasks: Array<TasksType>
+    entityStatus: RequestStatusType
 }
 
 const Todolist: React.FC<PropsType> = React.memo((
-    {tdlId, tdlTitle, tasks, filter,}) => {
+    {tdlId, tdlTitle, tasks, filter, entityStatus}) => {
 
     let dispatch = useAppDispatch()
     useEffect(() => {
@@ -29,7 +31,7 @@ const Todolist: React.FC<PropsType> = React.memo((
     //Filter
     const onFilterHandler = useCallback((filter: TaskFilterType) => {
         dispatch(OnFilterAC(tdlId, filter))
-    },[dispatch, tdlId])
+    }, [dispatch, tdlId])
 
     //Adding
     const onClickAddTask = useCallback((taskValue: string) => {
@@ -39,12 +41,12 @@ const Todolist: React.FC<PropsType> = React.memo((
     //Removing
     const onRemoveTdl = useCallback(() => {
         dispatch(DeleteTdlTC(tdlId))
-    },[dispatch, tdlId])
+    }, [dispatch, tdlId])
 
     //Editing
     const onChangeTdlTitleHandler = useCallback((newTitle: string) => {
         dispatch(UpdateTdlTitleTC(tdlId, newTitle))
-    },[dispatch, tdlId])
+    }, [dispatch, tdlId])
 
     //Filter
     if (filter === 'completed') {
@@ -90,7 +92,10 @@ const Todolist: React.FC<PropsType> = React.memo((
                     onChange={onChangeTdlTitleHandler}
                     title={tdlTitle}
                 />
-                <IconButton onClick={() => onRemoveTdl()}>
+                <IconButton
+                    disabled={entityStatus === 'loading'}
+                    onClick={() => onRemoveTdl()}
+                >
                     <DeleteIcon fontSize="small"/>
                 </IconButton>
             </h3>
