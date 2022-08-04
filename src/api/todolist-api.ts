@@ -1,5 +1,6 @@
 import axios from "axios";
 import {TaskFilterType} from "../state/todolists-reducer";
+import {TaskStatuses, TodoTaskPriorities} from "./tasks-api";
 
 
 const apiInstance = axios.create({
@@ -22,6 +23,14 @@ type ResponseType<D = {}> = {
     resultCode: number,
     messages: string[],
     data: D
+}
+export type UpdateTaskModelType = {
+    deadline: string
+    description: string
+    priority: TodoTaskPriorities
+    startDate: string
+    status: TaskStatuses
+    title: string
 }
 
 export const todolistApi = {

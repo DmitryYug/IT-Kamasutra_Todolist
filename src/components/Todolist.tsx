@@ -4,11 +4,10 @@ import EditableSpan from "./EditableSpan/EditableSpan";
 import {Button, ButtonGroup, IconButton} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {DeleteTdlTC, OnFilterAC, TaskFilterType, UpdateTdlTitleTC} from "../state/todolists-reducer";
-import {AddTaskTC, ChangeTaskStatusTC, ChangeTaskTitleTC, DeleteTaskTC, SetTasksTC,} from "../state/tasks-reducer";
+import {AddTaskTC, DeleteTaskTC, SetTasksTC, UpdateTaskTC,} from "../state/tasks-reducer";
 import {Task} from "./Task/Task";
 import {TaskStatuses, TasksType} from "../api/tasks-api";
 import {useAppDispatch} from "../state/store";
-
 
 //Types
 type PropsType = {
@@ -34,7 +33,6 @@ const Todolist: React.FC<PropsType> = React.memo((
 
     //Adding
     const onClickAddTask = useCallback((taskValue: string) => {
-        // dispatch(AddTaskAC(tdlId, taskValue))
         dispatch(AddTaskTC(tdlId, taskValue))
     }, [dispatch, tdlId])
 
@@ -59,17 +57,17 @@ const Todolist: React.FC<PropsType> = React.memo((
 
 //Children callbacks
     const onRemoveTask = (taskId: string,) => {
-        // dispatch(RemoveTaskAC(tdlId, taskId))
         dispatch(DeleteTaskTC(tdlId, taskId))
     }
     const checkBoxOnChangeHandler = (taskId: string, value: boolean) => {
         value
-            ? dispatch(ChangeTaskStatusTC(tdlId, taskId, TaskStatuses.Completed))
-            : dispatch(ChangeTaskStatusTC(tdlId, taskId, TaskStatuses.New))
+            ? dispatch(UpdateTaskTC(tdlId, taskId, {status: TaskStatuses.Completed}))
+            : dispatch(UpdateTaskTC(tdlId, taskId, {status: TaskStatuses.New}))
     }
     const onChangeTitleHandler = (taskId: string, newTitle: string) => {
-        dispatch(ChangeTaskTitleTC(tdlId, taskId, newTitle))
+        dispatch(UpdateTaskTC(tdlId, taskId, {title: newTitle}))
     }
+
 //TaskElements
     const taskElements = tasks?.map(t => {
         return (
@@ -83,6 +81,7 @@ const Todolist: React.FC<PropsType> = React.memo((
             />
         )
     })
+
 //Component return
     return (
         <div>

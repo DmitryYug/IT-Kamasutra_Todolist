@@ -1,4 +1,5 @@
 import axios from "axios";
+import {UpdateTaskModelType} from "./todolist-api";
 
 
 const apiInstance = axios.create({
@@ -55,11 +56,7 @@ export const tasksApi = {
     deleteTaskApi(todolistId: string, taskId: string) {
         return apiInstance.delete<ResponseType>(`/todo-lists/${todolistId}/tasks/${taskId}`)
     },
-    updateTitleTaskApi(todolistId: string, taskId: string, title: string) {
-        return apiInstance.put<ResponseType<{item: TasksType}>>(`/todo-lists/${todolistId}/tasks/${taskId}`, {title})
-    },
-    updateStatusTaskApi(todolistId: string, taskId: string, status: TaskStatuses) {
-        return apiInstance.put<ResponseType<{item: TasksType}>>(`/todo-lists/${todolistId}/tasks/${taskId}`, {status})
+    updateTaskApi(todolistId: string, taskId: string, model: UpdateTaskModelType) {
+        return apiInstance.put<ResponseType<TasksType>>(`/todo-lists/${todolistId}/tasks/${taskId}`, model)
     }
-
 }

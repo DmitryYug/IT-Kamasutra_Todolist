@@ -2,13 +2,9 @@ import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import Todolist from "./components/Todolist";
 import AddItemInput from "./components/AddItemInput/AddItemInput";
-import {Paper, Container, Grid} from "@mui/material";
+import {Container, Grid, Paper} from "@mui/material";
 import ButtonAppBar from "./components/AppBar/AppBar";
-import {
-    CreateTdlTC,
-    SetTdlsTC,
-    TdlDomainType
-} from "./state/todolists-reducer";
+import {CreateTdlTC, SetTdlsTC, TdlDomainType} from "./state/todolists-reducer";
 import {useSelector} from "react-redux";
 import {AppRootStateType, useAppDispatch} from "./state/store";
 import {TasksStateType} from "./state/tasks-reducer";
