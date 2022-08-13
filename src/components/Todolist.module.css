@@ -6,10 +6,18 @@
 .activeFilter {
     background: cornflowerblue;
 }
+
 .isDone {
     opacity: 0.5;
 }
 
 .inputClass {
     max-width: 20px;
+}
+
+.padding10 {
+    padding: 10px
+}
+.marginBott {
+    margin-bottom: 10px;
 }

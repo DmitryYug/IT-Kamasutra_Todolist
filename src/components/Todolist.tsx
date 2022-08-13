@@ -9,6 +9,7 @@ import {Task} from "./Task/Task";
 import {TaskStatuses, TasksType} from "../api/tasks-api";
 import {useAppDispatch} from "../state/store";
 import {RequestStatusType} from "../app/app-reducer";
+import styles from './Todolist.module.css'
 
 //Types
 type PropsType = {
@@ -86,22 +87,14 @@ const Todolist: React.FC<PropsType> = React.memo((
 
 //Component return
     return (
-        <div>
+        <div className={styles.padding10}>
             <h3>
-                <EditableSpan
-                    onChange={onChangeTdlTitleHandler}
-                    title={tdlTitle}
-                />
-                <IconButton
-                    disabled={entityStatus === 'loading'}
-                    onClick={() => onRemoveTdl()}
-                >
+                <EditableSpan onChange={onChangeTdlTitleHandler} title={tdlTitle}/>
+                <IconButton disabled={entityStatus === 'loading'} onClick={() => onRemoveTdl()}>
                     <DeleteIcon fontSize="small"/>
                 </IconButton>
             </h3>
-            <AddItemInput
-                addItem={onClickAddTask}
-            />
+            <AddItemInput addItem={onClickAddTask}/>
             <div>
                 {taskElements}
             </div>
