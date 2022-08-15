@@ -1,5 +1,6 @@
-#### FLUX data flow with controlled components. <br />
-#### Unit tests on reducer functional. Render optimisation with hooks useMemo, useCallback and HOC memo.
+#### FLUX data flow with controlled components. 
+#### Unit tests on reducer functional. 
+#### Render optimisation with hooks useMemo, useCallback and HOC memo.
 
 
 ## To start project
