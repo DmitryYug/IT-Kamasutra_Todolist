@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {DeleteTdlTC, OnFilterAC, TaskFilterType, UpdateTdlTitleTC} from "../state/todolists-reducer";
 import {AddTaskTC, DeleteTaskTC, SetTasksTC, UpdateTaskTC,} from "../state/tasks-reducer";
 import {Task} from "./Task/Task";
-import {TaskStatuses, TasksType} from "../api/tasks-api";
+import {TaskStatuses, TasksType} from "../api/app-api";
 import {useAppDispatch} from "../state/store";
 import {RequestStatusType} from "../app/app-reducer";
 import styles from './Todolist.module.css'

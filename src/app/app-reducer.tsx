@@ -9,13 +9,13 @@ const initialState = {
 type InitialStateType = typeof initialState
 export type AppPreloaderTogglerType = ReturnType<typeof AppPreloaderTogglerAC>
 export type AppErrorTogglerType = ReturnType<typeof AppErrorTogglerAC>
-export type AppActionsType =
+export type AppActionsTypes =
     | AppPreloaderTogglerType
     | AppErrorTogglerType
 
 
 
-export const appReducer = (state: InitialStateType = initialState, action: AppActionsType): InitialStateType => {
+export const appReducer = (state: InitialStateType = initialState, action: AppActionsTypes): InitialStateType => {
     switch (action.type) {
         case 'APP/SET-STATUS':
             return {...state, status: action.status}

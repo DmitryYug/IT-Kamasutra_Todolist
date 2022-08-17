@@ -1,4 +1,4 @@
-import {ResultCode, TdlsType, todolistApi} from "../api/todolist-api";
+import {ResultCode, TdlsType, appApi} from "../api/app-api";
 import {Dispatch} from "redux";
 import {AllActionsType} from "./store";
 import {AppErrorTogglerAC, AppPreloaderTogglerAC, RequestStatusType} from "../app/app-reducer";
@@ -9,7 +9,7 @@ let initialState: TdlDomainType[] = []
 
 //Types
 export type TaskFilterType = 'all' | 'active' | 'completed'
-export type todolistACTypes =
+export type TodolistACTypes =
     | ReturnType<typeof AddTdlAC>
     | ReturnType<typeof RemoveTdlAC>
     | ReturnType<typeof TdlTitleSpanChangeAC>
@@ -63,7 +63,7 @@ export const EntityStatusTogglerAC = (todolistId: string, status: RequestStatusT
 export const SetTdlsTC = () => {
     return (dispatch: Dispatch) => {
         dispatch(AppPreloaderTogglerAC('loading'))
-        todolistApi.getTodolistApi()
+        appApi.getTodolistApi()
             .then(res => {
                 dispatch(AppPreloaderTogglerAC('succeeded'))
                 dispatch(SetTdlsAC(res.data))
@@ -78,7 +78,7 @@ export const DeleteTdlTC = (tdlId: string) => {
     return (dispatch: Dispatch) => {
         dispatch(AppPreloaderTogglerAC('loading'))
         dispatch(EntityStatusTogglerAC(tdlId, 'loading'))
-        todolistApi.deleteTodolistApi(tdlId)
+        appApi.deleteTodolistApi(tdlId)
             .then(res => {
                 dispatch(AppPreloaderTogglerAC('succeeded'))
                 dispatch(EntityStatusTogglerAC(tdlId, 'succeeded'))
@@ -93,7 +93,7 @@ export const DeleteTdlTC = (tdlId: string) => {
 export const CreateTdlTC = (title: string) => {
     return (dispatch: Dispatch) => {
         dispatch(AppPreloaderTogglerAC('loading'))
-        todolistApi.createTodolistApi(title)
+        appApi.createTodolistApi(title)
             .then(res => {
                     if (res.data.resultCode === ResultCode.SUCCESSFULL) {
                         dispatch(AppPreloaderTogglerAC('succeeded'))
@@ -111,7 +111,7 @@ export const CreateTdlTC = (title: string) => {
 export const UpdateTdlTitleTC = (tdlId: string, title: string) => {
     return (dispatch: Dispatch) => {
         dispatch(AppPreloaderTogglerAC('loading'))
-        todolistApi.updateTitleTodolistApi(tdlId, title)
+        appApi.updateTitleTodolistApi(tdlId, title)
             .then(res => {
                 dispatch(AppPreloaderTogglerAC('succeeded'))
                 dispatch(TdlTitleSpanChangeAC(tdlId, title))

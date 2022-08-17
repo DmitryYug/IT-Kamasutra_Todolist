@@ -4,7 +4,7 @@ import {AppRootStateType} from "../state/store";
 import {combineReducers, createStore} from "redux";
 import {tasksReducer} from "../state/tasks-reducer";
 import {todolistsReducer} from "../state/todolists-reducer";
-import {TaskStatuses, TodoTaskPriorities} from "../api/tasks-api";
+import {TaskStatuses, TodoTaskPriorities} from "../api/app-api";
 import {appReducer} from "../app/app-reducer";
 
 

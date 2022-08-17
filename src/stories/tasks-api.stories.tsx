@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {tasksApi} from "../api/tasks-api";
+import {appApi} from "../api/app-api";
 
 export default {
     title: 'Tasks API'
@@ -9,7 +9,7 @@ export const GetTasks = () => {
     const [state, setState] = useState<any>(null)
     const todolistId = 'here will be tdl id'
     useEffect(() => {
-        tasksApi.getTaskApi(todolistId)
+        appApi.getTaskApi(todolistId)
             .then(res => setState(res.data))
     }, [])
     console.log(state)
@@ -24,7 +24,7 @@ export const CreateTasks = () => {
     const todolistId = 'here will be tdl id'
     const title = 'here will be title'
     useEffect(() => {
-        tasksApi.createTaskApi(todolistId, title)
+        appApi.createTaskApi(todolistId, title)
             .then(res => setState(res.data.data))
     }, [])
     console.log(state)
@@ -40,7 +40,7 @@ export const DeleteTasks = () => {
     const taskId = 'here will be task id'
 
     useEffect(() => {
-        tasksApi.deleteTaskApi(todolistId, taskId)
+        appApi.deleteTaskApi(todolistId, taskId)
             .then(res => setState(res.data))
     }, [])
     console.log(state)

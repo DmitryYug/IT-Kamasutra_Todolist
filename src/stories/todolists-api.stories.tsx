@@ -1,6 +1,6 @@
 import React from "react";
 import {useEffect, useState} from "react";
-import {todolistApi} from "../api/todolist-api";
+import {appApi} from "../api/app-api";
 
 export default {
     title: 'Todolists API'
@@ -20,7 +20,7 @@ type TdlType = {
 export const GetTodolists = () => {
     const [state, setState] = useState<TdlType[]>([])
     useEffect(() => {
-        todolistApi.getTodolistApi()
+        appApi.getTodolistApi()
             .then(res => setState(res.data))
     }, [])
     const tdls = state.map(tdl => {
@@ -38,7 +38,7 @@ export const GetTodolists = () => {
 export const CreateTodolist = () => {
     const [state, setState] = useState<any>(null)
     useEffect(() => {
-        todolistApi.createTodolistApi('new tdl')
+        appApi.createTodolistApi('new tdl')
             .then(res => setState(res.data.data))
     }, [])
     console.log(state)
@@ -52,7 +52,7 @@ export const UpdateTodolistTitle = () => {
     const tdlId = 'here will be tdl id'
 
     useEffect(() => {
-        todolistApi.updateTitleTodolistApi(tdlId, 'new tdl')
+        appApi.updateTitleTodolistApi(tdlId, 'new tdl')
             .then(res => setState(res.data))
     }, [])
     return (
@@ -64,7 +64,7 @@ export const UpdateTodolistTitle = () => {
 export const GetFirstTdlId = () => {
     const [tdlId, setTdlId] = useState<any>(null)
     useEffect(() => {
-        todolistApi.getTodolistId(2)
+        appApi.getTodolistId(2)
             .then(res => setTdlId(res.id))
     }, [])
     return (

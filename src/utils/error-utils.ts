@@ -3,7 +3,7 @@ import {
     AppPreloaderTogglerAC, AppPreloaderTogglerType
 } from '../app/app-reducer';
 import {Dispatch} from 'redux';
-import {ResponseType} from "../api/todolist-api";
+import {ResponseType} from "../api/app-api";
 
 // generic function
 export const handleServerAppError = <T>(data: ResponseType<T>, dispatch: ErrorUtilsDispatchType) => {

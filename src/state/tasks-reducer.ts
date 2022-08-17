@@ -1,8 +1,7 @@
 import {AddTdlAC, RemoveTdlAC, SetTdlsAC} from "./todolists-reducer";
-import {tasksApi, TaskStatuses, TasksType, TodoTaskPriorities} from "../api/tasks-api";
-import {AllActionsType, AppRootStateType, TDispatch} from "./store";
-import {UpdateTaskModelType} from "../api/todolist-api";
-import {AppErrorTogglerAC, AppPreloaderTogglerAC} from "../app/app-reducer";
+import {appApi, TaskStatuses, TasksType, TodoTaskPriorities, UpdateTaskModelType} from "../api/app-api";
+import {AllActionsType, AppRootStateType, ThunkType} from "./store";
+import {AppPreloaderTogglerAC} from "../app/app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
 
 let initialState: TasksStateType = {}
@@ -16,7 +15,7 @@ type UpdateDomainTaskModelTypes = {
     status?: TaskStatuses
     title?: string
 }
-export type tasksReducerACTypes =
+export type TasksReducerACTypes =
     | ReturnType<typeof AddTaskAC>
     | ReturnType<typeof RemoveTaskAC>
     | ReturnType<typeof CheckBoxChangeAC>
@@ -95,10 +94,10 @@ export const UpdateTaskAC = (tdlId: string, taskId: string, model: UpdateDomainT
 
 
 //ThunkCreators
-export const SetTasksTC = (todolistId: string) => {
-    return (dispatch: TDispatch) => {
+export const SetTasksTC = (todolistId: string):ThunkType => {
+    return (dispatch) => {
         dispatch(AppPreloaderTogglerAC('loading'))
-        tasksApi.getTaskApi(todolistId)
+        appApi.getTaskApi(todolistId)
             .then(res => {
                     dispatch(AppPreloaderTogglerAC('succeeded'))
                     dispatch(SetTasksAC(todolistId, res.data.items))
@@ -107,10 +106,10 @@ export const SetTasksTC = (todolistId: string) => {
             .catch(error => {handleServerNetworkError(error, dispatch)})
     }
 }
-export const DeleteTaskTC = (todolistId: string, taskId: string) => {
-    return (dispatch: TDispatch) => {
+export const DeleteTaskTC = (todolistId: string, taskId: string): ThunkType => {
+    return (dispatch) => {
         dispatch(AppPreloaderTogglerAC('loading'))
-        tasksApi.deleteTaskApi(todolistId, taskId)
+        appApi.deleteTaskApi(todolistId, taskId)
             .then(res => {
                 dispatch(AppPreloaderTogglerAC('succeeded'))
                 dispatch(RemoveTaskAC(todolistId, taskId))
@@ -118,10 +117,10 @@ export const DeleteTaskTC = (todolistId: string, taskId: string) => {
             .catch(error => {handleServerNetworkError(error, dispatch)})
     }
 }
-export const AddTaskTC = (todolistId: string, title: string) => {
-    return (dispatch: TDispatch) => {
+export const AddTaskTC = (todolistId: string, title: string): ThunkType => {
+    return (dispatch) => {
         dispatch(AppPreloaderTogglerAC('loading'))
-        tasksApi.createTaskApi(todolistId, title)
+        appApi.createTaskApi(todolistId, title)
             .then(res => {
                     if (res.data.resultCode === 0) {
                         dispatch(AppPreloaderTogglerAC('succeeded'))
@@ -132,8 +131,8 @@ export const AddTaskTC = (todolistId: string, title: string) => {
             .catch(error => {handleServerNetworkError(error, dispatch)})
     }
 }
-export const UpdateTaskTC = (todolistId: string, taskId: string, domainModel: UpdateDomainTaskModelTypes) => {
-    return (dispatch: TDispatch, getState: () => AppRootStateType) => {
+export const UpdateTaskTC = (todolistId: string, taskId: string, domainModel: UpdateDomainTaskModelTypes): ThunkType => {
+    return (dispatch, getState: () => AppRootStateType) => {
         dispatch(AppPreloaderTogglerAC('loading'))
         const currentTask = getState().tasks[todolistId].find(t => t.id === taskId)
         if (currentTask) {
@@ -146,7 +145,7 @@ export const UpdateTaskTC = (todolistId: string, taskId: string, domainModel: Up
                 title: currentTask.title,
                 ...domainModel
             }
-            tasksApi.updateTaskApi(todolistId, taskId, apiModel)
+            appApi.updateTaskApi(todolistId, taskId, apiModel)
                 .then(res => {
                     dispatch(AppPreloaderTogglerAC('succeeded'))
                     dispatch(UpdateTaskAC(todolistId, taskId, apiModel))
